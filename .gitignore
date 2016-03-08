@@ -1,0 +1,13 @@
+/.settings/
+/.externalToolBuilders/
+/.springBeans/
+
+/target/
+/src/main/webapp/WEB-INF/classes/
+/src/main/webapp/WEB-INF/lib
+
+#/src/main/webapp/incoming/
+#/src/main/webapp/upload/images/
+#/src/main/webapp/upload/music/
+#/src/main/webapp/upload/video/
+#/src/main/webapp/upload/voice/
