@@ -1,4 +1,4 @@
-package com.lx.activemq.demo;
+package com.lx.jms.activemq;
 
 public class Receiver {
 

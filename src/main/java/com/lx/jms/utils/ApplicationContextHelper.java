@@ -1,4 +1,4 @@
-package com.lx.activemq.utils;
+package com.lx.jms.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
