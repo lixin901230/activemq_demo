@@ -3,6 +3,8 @@ http://archive.apache.org/dist/activemq/5.13.0/
 
 如何配置ActiveMQ的服务器端：
 
+	注意：apache-activemq-5.13.0需要jdk1.7或更高版本的jdk，且测试环境需要JAVA_HOME
+
 1、下载软件
 	去官方网站下载：http://activemq.apache.org/ 我下载的是apache-activemq-5.13.0.bin 版本，
 	当然开源的也是支持下载source的，需要自己编译下，这里不做过多介绍
