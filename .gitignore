@@ -5,6 +5,7 @@
 /target/
 /src/main/webapp/WEB-INF/classes/
 /src/main/webapp/WEB-INF/lib
+/activemq-data/
 
 #/src/main/webapp/incoming/
 #/src/main/webapp/upload/images/
