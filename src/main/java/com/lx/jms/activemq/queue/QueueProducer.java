@@ -1,4 +1,4 @@
-package com.lx.jms.activemq;
+package com.lx.jms.activemq.queue;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -12,10 +12,17 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
- * 消息生产者
+ * 消息生产者（点对点消息模式）
+ * 消息队列消息模式：
+ * 	1）、发布订阅模式（publish-subscribe）
+ * 	2）、点对点模式（point-to-point）
+ * 	3）、（非JMS规范标准提供的模式，为使用过程中衍生出的模式）请求-应答模式（request-response）
  * @author lx
  */
-public class MsgProducer {
+public class QueueProducer {
+	
+	private static String brokerURL = "tcp://localhost:61616";
+	private static String DESTINATION = "lx.queue";	//消息队列名称DESTINATION在ActveMQ管理界面可以创建或管理，地址：http://localhost:8161/admin/queues.jsp，默认会自动根据传入的参数创建对应名称的队列
 	
 	/**
 	 * 发送消息测试
@@ -42,7 +49,7 @@ public class MsgProducer {
 			connectionFactory = new ActiveMQConnectionFactory(
 				ActiveMQConnectionFactory.DEFAULT_USER, 
 				ActiveMQConnectionFactory.DEFAULT_PASSWORD, 
-				"tcp://localhost:61616");
+				brokerURL);
 			
 			// 从连接工厂中构造连接对象
 			connection = connectionFactory.createConnection();
@@ -52,11 +59,11 @@ public class MsgProducer {
 			// 获取操作连接
 			session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
 			
-			// 得到消息发送的目的地对象
-			destination = session.createQueue("ActiveMQ");
+			// 得到消息发送的目的地对象消，息队列名称DESTINATION在ActveMQ管理界面可以创建或管理，地址：http://localhost:8161/admin/queues.jsp，默认会自动根据传入的参数创建对应名称的队列
+			destination = session.createQueue(DESTINATION);	//createQueue为点对点消息模式，createTopic为发布订阅模式
 			
 			// 得到消息生产者（发送者）
-			producer = session.createProducer(destination);
+			producer = session.createProducer(destination);	//如果是要给个目的地发送消息，则创建producer是不指定目的地，在发送的时候在send方法中通过参数指定
 			
 			// 设置不持久化，仅为了学习，实际项目中根据需求和实际情况而定
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
@@ -65,12 +72,13 @@ public class MsgProducer {
 			send(session, producer);
 			
 			session.commit();
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if(connection != null) {
 				try {
+					session.close();
 					connection.close();
 				} catch (JMSException e) {
 					e.printStackTrace();
@@ -89,9 +97,8 @@ public class MsgProducer {
 		
 		try {
 			//构造消息，此处消息内容写死
-			for (int j = 0; j < 1000; j++) {
+			for (int j = 0; j < 10; j++) {
 				TextMessage message = session.createTextMessage("ActiveMQ 发送消息"+j);
-				
 				System.out.println("发送消息：ActiveMQ 发送消息"+j);
 				
 				//发送消息到目的地

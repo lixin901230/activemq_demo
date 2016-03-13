@@ -14,6 +14,8 @@ import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
+ * 官方示例
+ * 点对点消息模式（队列消息模式）
  * Hello world!
  */
 public class App {
@@ -115,7 +117,7 @@ public class App {
 				// Create a MessageConsumer from the Session to the Topic or Queue
 				MessageConsumer consumer = session.createConsumer(destination);
 				
-				// Wait for a message
+				// Wait for a message（同步模式接受消息，没消息时会阻塞直到有消息位置；这里可以使用消息监听实现异步处理消息）
 				Message message = consumer.receive(1000);
 				
 				if (message instanceof TextMessage) {

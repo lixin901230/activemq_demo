@@ -214,6 +214,7 @@
   		<artifactId>spring-expression</artifactId>
   		<version>${org.springframework.version}</version>
 	</dependency>
+	<!-- spirng4 才有 
 	<dependency>
 	  <groupId>org.springframework</groupId>
 	  <artifactId>spring-websocket</artifactId>
@@ -223,7 +224,7 @@
 	  <groupId>org.springframework</groupId>
 	  <artifactId>spring-messaging</artifactId>
 	  <version>${org.springframework.version}</version>
-	</dependency>
+	</dependency> -->
 	<dependency>
 		<groupId>org.springframework</groupId>
   		<artifactId>spring-jms</artifactId>

@@ -1,8 +1,7 @@
-package com.lx.jms.activemq;
+package com.lx.jms.activemq.utils;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -59,29 +58,14 @@ public class MQConnectionFactory {
 			
 			// 从连接工厂获取连接对象
 			connection = connectionFactory.createConnection();
+			
+			//启动连接
+			//connection.start();
+			
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
 		return connection;
-	}
-	
-	
-	/**
-	 * 获取消息队列 操作连接
-	 * @return
-	 */
-	public Session getMQSession() {
-		Session session = null;
-		try {
-			Connection connection = getMQConnection();
-			
-			// 获取操作连接
-			session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
-		
-		return session;
 	}
 	
 	/**
