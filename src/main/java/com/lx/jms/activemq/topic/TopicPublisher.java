@@ -10,6 +10,7 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -48,6 +49,7 @@ public class TopicPublisher {
 					brokerURL);
 			
 			connection = connectionFactory.createConnection();
+			connection.start();
 			
 			session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
 			
@@ -58,12 +60,14 @@ public class TopicPublisher {
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			sendMessage(session, producer);
 			
+			Thread.sleep(1000);
+			
 			session.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if(session != null) {
-				session.close();
+//				session.close();
 			}
 			if(connection != null) {
 				connection.close();
@@ -75,13 +79,16 @@ public class TopicPublisher {
 		
 		for (int i = 1; i <= 5; i++) {
 			
-			String message = "发送消息第" + i + "条";
-			MapMessage mapMessage = session.createMapMessage();
-			mapMessage.setString("id", "topic_"+i);
-			mapMessage.setString("text", message);
-			mapMessage.setLong("times", new Date().getTime());
-			producer.send(mapMessage);
-			System.out.println("发送消息："+mapMessage);
+			String message = "第" + i + "条消息";
+			/*MapMessage msgObj = session.createMapMessage();
+			msgObj.setString("id", "topic_"+i);
+			msgObj.setString("text", message);
+			msgObj.setLong("times", new Date().getTime());*/
+			
+			TextMessage msgObj = session.createTextMessage(message);
+			producer.send(msgObj);
+			
+			System.out.println("发送消息："+message);
 		}
 	}
 	
