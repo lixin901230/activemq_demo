@@ -2,8 +2,8 @@
 工程目录说明：
 	src/main/java
 		com.lx.jms.activemq.demo	官方点到点消息模式示例
-		com.lx.jms.activemq.p2p		点对点模式(point-to-point)
-		com.lx.jms.activemq.topic	订阅-发布模式
+		com.lx.jms.activemq.queue	点对点模式(point-to-point)
+		com.lx.jms.activemq.topic	订阅-发布模式，即topic消息(publish-subscribe)
 		com.lx.jms.activemq.utils	ActiveMQ工具类
 		com.lx.jms.utils			系统工具类
 	

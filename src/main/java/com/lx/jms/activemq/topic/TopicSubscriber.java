@@ -8,9 +8,13 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+
+import com.lx.jms.activemq.listener.MsgListener;
 
 
 /**
@@ -46,32 +50,43 @@ public class TopicSubscriber {
 					brokerURL);
 			
 			connection = connectionFactory.createConnection();
+			connection.start();
 			
-			session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+			//获取操作连接,默认自动向服务器发送接收成功的响应
+			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			
 			destination = session.createTopic(DESTINATION);
 			
 			messageConsumer = session.createConsumer(destination);
 			
-			//阻塞式接收消息
-			Message message = messageConsumer.receive();
-			MapMessage mapMessage = (MapMessage) message;
-			String id = mapMessage.getString("id");
-			String text = mapMessage.getString("text");
-			long times = mapMessage.getLong("times");
-			System.out.println("接收到消息：id"+id+"----text="+text+"----times="+times);
-			
-			//注册消息处理器，异步接收处理消息
-			//messageConsumer.setMessageListener(new MsgListener());
+			while(true) {
+				
+				//阻塞式接收消息
+				Message message = messageConsumer.receive(1000);
+				
+				//文本消息
+				TextMessage textMessage = (TextMessage) message;
+				System.out.println("收到消息："+textMessage.getText());
+				
+				//Map消息
+				//MapMessage mapMessage = (MapMessage) message;
+				//System.out.println("接收到消息：id"+mapMessage.getString("id")+"----text="+mapMessage.getString("text")+"----times="+mapMessage.getLong("times"));
+				
+				//注册消息处理器，异步接收处理消息
+				//messageConsumer.setMessageListener(new MsgListener());
+				
+				if(message == null) {
+					break;
+				}
+			}
 			
 			Thread.sleep(2000);	//休眠2秒再关闭
 			
-			//session.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if(session != null) {
-				session.close();
+//				session.close();
 			}
 			if(connection != null) {
 				connection.close();

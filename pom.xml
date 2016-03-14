@@ -40,12 +40,67 @@
 	</dependency>
 	
 	<!-- activemq 依赖 -->
-  	<dependency>
+  	<!-- <dependency>
 		<groupId>org.apache.activemq</groupId>
 		<artifactId>activemq-all</artifactId>
 		<version>5.13.0</version>
+	</dependency> -->
+  	<dependency>
+		<groupId>org.apache.activemq</groupId>
+		<artifactId>activemq-broker</artifactId>
+		<version>5.13.0</version>
 	</dependency>
-
+  	<dependency>
+		<groupId>org.apache.activemq</groupId>
+		<artifactId>activemq-client</artifactId>
+		<version>5.13.0</version>
+	</dependency>
+  	<dependency>
+		<groupId>org.apache.activemq</groupId>
+		<artifactId>activemq-kahadb-store</artifactId>
+		<version>5.13.0</version>
+	</dependency>
+  	<dependency>
+		<groupId>org.apache.activemq</groupId>
+		<artifactId>activemq-spring</artifactId>
+		<version>5.13.0</version>
+	</dependency>
+	<dependency>
+	  	<groupId>org.apache.activemq</groupId>
+	  	<artifactId>activemq-pool</artifactId>
+	  	<version>5.13.0</version>
+	</dependency>
+	<dependency>
+	  	<groupId>org.apache.activemq</groupId>
+	  	<artifactId>activemq-jms-pool</artifactId>
+	  	<version>5.13.0</version>
+	</dependency>
+	<dependency>
+	  	<groupId>org.apache.activemq</groupId>
+	  	<artifactId>activemq-openwire-legacy</artifactId>
+	 	<version>5.13.0</version>
+	</dependency>
+	<dependency>
+		<groupId>org.fusesource.hawtbuf</groupId>
+		<artifactId>hawtbuf</artifactId>
+		<version>1.11</version>
+	</dependency>
+  	<dependency>
+		<groupId>geronimo-spec</groupId>
+	  	<artifactId>geronimo-spec-jms</artifactId>
+	  	<version>1.1-rc4</version>
+	</dependency>
+	<dependency>
+	  	<groupId>geronimo-spec</groupId>
+	  	<artifactId>geronimo-spec-j2ee</artifactId>
+	  	<version>1.4-rc4</version>
+	</dependency>
+	<dependency>
+	  	<groupId>geronimo-spec</groupId>
+	  	<artifactId>geronimo-spec-jta</artifactId>
+	  	<version>1.0.1B-rc4</version>
+	</dependency>
+	
 	  	
 	<!-- xml 依赖 -->
 	<dependency>
@@ -214,7 +269,6 @@
   		<artifactId>spring-expression</artifactId>
   		<version>${org.springframework.version}</version>
 	</dependency>
-	<!-- spirng4 才有 
 	<dependency>
 	  <groupId>org.springframework</groupId>
 	  <artifactId>spring-websocket</artifactId>
@@ -224,7 +278,7 @@
 	  <groupId>org.springframework</groupId>
 	  <artifactId>spring-messaging</artifactId>
 	  <version>${org.springframework.version}</version>
-	</dependency> -->
+	</dependency>
 	<dependency>
 		<groupId>org.springframework</groupId>
   		<artifactId>spring-jms</artifactId>
