@@ -16,8 +16,6 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.lx.jms.activemq.listener.MsgListener;
 
-
-/**
 /**
  * 消息订阅者（订阅-发布模式）
  * 消息队列消息模式：
@@ -31,6 +29,12 @@ public class TopicSubscriber {
 	private static String brokerURL = "tcp://localhost:61616";
 	private static String DESTINATION = "lx.topic";	//消息队列名称DESTINATION在ActveMQ管理界面可以创建或管理，地址：http://localhost:8161/admin/topics.jsp，默认会自动根据传入的参数创建对应名称的队列
 	
+	/**
+	 * 启动消息订阅者
+	 * 	注意：测试时需要先启动 订阅者，再启动 发布者
+	 * @param args
+	 * @throws JMSException
+	 */
 	public static void main(String[] args) throws JMSException {
 		
 		ConnectionFactory connectionFactory = null;
@@ -59,38 +63,37 @@ public class TopicSubscriber {
 			
 			messageConsumer = session.createConsumer(destination);
 			
-			while(true) {
+			//方式1、阻塞式接收消息
+			/*while(true) {
 				
-				//阻塞式接收消息
-				Message message = messageConsumer.receive(3000);
+				//阻塞式接收消息：设置接收者接收消息的时间，为了便于测试，这里设定为10s，在这10秒内，能接收到发布者发送的topic消息
+				Message message = messageConsumer.receive(10000);
+				
+				//Map消息
+				//MapMessage msgObj = (MapMessage) message;
+				//System.out.println("接收到消息：id"+msgObj.getString("id")+"----text="+msgObj.getString("text")+"----times="+msgObj.getLong("times"));
 				
 				//文本消息
-				TextMessage textMessage = (TextMessage) message;
-				if(textMessage != null) {
-					System.out.println("收到消息："+textMessage.getText());
+				TextMessage msgObj = (TextMessage) message;
+				if(msgObj != null) {
+					System.out.println("收到消息："+msgObj.getText());
 				} else {
 					continue;
 				}
-				
-				//Map消息
-				//MapMessage mapMessage = (MapMessage) message;
-				//System.out.println("接收到消息：id"+mapMessage.getString("id")+"----text="+mapMessage.getString("text")+"----times="+mapMessage.getLong("times"));
-				
-				//注册消息处理器，异步接收处理消息
-				//messageConsumer.setMessageListener(new MsgListener());
-				
 				if(message == null) {
 					break;
 				}
-			}
+			}*/
 			
-			Thread.sleep(2000);	//休眠2秒再关闭
+			// 方式2、注册消息处理器，异步接收处理消息
+			messageConsumer.setMessageListener(new MsgListener());
+			Thread.sleep(10000);	//休眠10秒等待接收消息再关闭，若不休眠，测试时可以不关闭session和connection进行测试
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if(session != null) {
-//				session.close();
+				session.close();
 			}
 			if(connection != null) {
 				connection.close();

@@ -14,16 +14,17 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
 	
 	<!-- 指定注解扫描包范围 -->
-	<context:component-scan base-package="com.lx.activemq"></context:component-scan>
+	<context:component-scan base-package="com.lx.jms"></context:component-scan>
 
 	<!-- Spring bean 获取工具类注入 -->
-	<bean id="WebApplicationContext" class="com.lx.activemq.utils.ApplicationContextHelper"></bean>  
+	<bean id="WebApplicationContext" class="com.lx.jms.utils.ApplicationContextHelper"></bean>  
 	
 	<!-- 导入springjdbc注入配置 -->
-	<import resource="applicationContext-jdbc.xml"/>
+	<!-- 若采用 Mysql 做消息持久化，则使用该配置加载数据源等信息
+	<import resource="applicationContext-jdbc.xml"/> -->
 	
 	<import resource="applicationContext-bean.xml"/>
 	
-	<import resource="applicationContext_activemq.xml"/>
+	<import resource="applicationContext_jms.xml"/>
 	
 </beans>

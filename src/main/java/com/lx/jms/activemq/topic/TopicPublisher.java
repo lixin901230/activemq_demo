@@ -30,6 +30,12 @@ public class TopicPublisher {
 	private static String DESTINATION = "lx.topic";	//消息队列名称DESTINATION在ActveMQ管理界面可以创建或管理，地址：http://localhost:8161/admin/topics.jsp，默认会自动根据传入的参数创建对应名称的队列
 	
 	
+	/**
+	 * 启动消息发布者
+	 * 	注意：测试时需要先启动 订阅者，再启动 发布者
+	 * @param args
+	 * @throws JMSException
+	 */
 	public static void main(String[] args) throws JMSException {
 		
 		ConnectionFactory connectionFactory = null;
@@ -67,7 +73,7 @@ public class TopicPublisher {
 			e.printStackTrace();
 		} finally {
 			if(session != null) {
-//				session.close();
+				session.close();
 			}
 			if(connection != null) {
 				connection.close();
@@ -80,12 +86,16 @@ public class TopicPublisher {
 		for (int i = 1; i <= 5; i++) {
 			
 			String message = "第" + i + "条消息";
+			
+			//Map消息
 			/*MapMessage msgObj = session.createMapMessage();
 			msgObj.setString("id", "topic_"+i);
 			msgObj.setString("text", message);
 			msgObj.setLong("times", new Date().getTime());*/
 			
+			//文本消息
 			TextMessage msgObj = session.createTextMessage(message);
+			//发送消息
 			producer.send(msgObj);
 			
 			System.out.println("发送消息："+message);

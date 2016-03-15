@@ -18,6 +18,19 @@ public class SpringContextUtil {
 
 	private static ApplicationContext ctx;
 	
+	private SpringContextUtil() {
+	}
+	
+	/**
+	 * 实例化对象
+	 * @param applicationContextXmlRealPath		spring配置文件路径（applicationContext.xml）
+	 * @return
+	 */
+	public static SpringContextUtil getInstance(String applicationContextXmlRealPath) {
+		ctx = getCtx(applicationContextXmlRealPath);
+		return new SpringContextUtil();
+	}
+	
 	/**
 	 * 初始化spring 应用上下文环境
 	 * @param applicationContextXmlRealPath
@@ -25,7 +38,7 @@ public class SpringContextUtil {
 	 * @throws Exception
 	 * @author Administrator
 	 */
-	public ApplicationContext getCtx(String applicationContextXmlRealPath) {
+	public static ApplicationContext getCtx(String applicationContextXmlRealPath) {
 		
 		try {
 			if(StringUtils.isEmpty(applicationContextXmlRealPath)) {

@@ -12,6 +12,22 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+	
+	<!-- 1、queue 消息（点对点模式） -->
+	<bean id="producer" class="com.lx.jms.activemq.queue.SpringQueueProducer">
+		<property name="jmsTemplate" ref="jmsTemplate"/>
+	</bean>
 
-		
+	<bean id="consumer" class="com.lx.jms.activemq.queue.SpringQueueConsumer">
+		<property name="jmsTemplate" ref="jmsTemplate"/>
+	</bean>
+	
+	<!-- 2、topic 消息（订阅-发布模式） -->
+	<bean id="publisher" class="com.lx.jms.activemq.topic.SpringTopicPublisher">
+		<property name="jmsTemplate" ref="jmsTemplate"/>
+	</bean>
+
+	<bean id="subscriber" class="com.lx.jms.activemq.topic.SpringTopicSubscriber">
+		<property name="jmsTemplate" ref="jmsTemplate"/>
+	</bean>
 </beans>
