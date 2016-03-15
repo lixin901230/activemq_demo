@@ -70,7 +70,7 @@ public class SpringContextUtil {
 			if(ctx != null) {
 				return ctx.getBean(beanName);
 			} else {
-				throw new Exception("获取bean"+beanName+"失败；原因：spring应用上下文环境对象ApplicationContext为null");
+				throw new Exception("获取bean："+beanName+"失败；原因：spring应用上下文环境对象ApplicationContext为null");
 			}
 		} catch (BeansException e) {
 			e.printStackTrace();
