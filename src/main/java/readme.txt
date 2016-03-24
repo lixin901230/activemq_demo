@@ -47,6 +47,9 @@
 		请求-应答方式并不是JMS规范系统默认提供的一种通信方式，而是通过在现有通信方式的基础上稍微运用一点技巧实现的
 		在JMS里面，如果要实现请求/应答的方式，可以利用JMSReplyTo和JMSCorrelationID消息头来将通信的双方关联起来。
 		另外，QueueRequestor和TopicRequestor能够支持简单的请求/应答过程。
+		
+消息持久化：
+	持久化配置修改activemq/conf/activemq.xml内容，参考本示例附带的activemq.xml文件中的配置
 
 原文引用：
 http://shmilyaw-hotmail-com.iteye.com/blog/1897635
