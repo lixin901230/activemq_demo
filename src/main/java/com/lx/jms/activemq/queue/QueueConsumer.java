@@ -6,6 +6,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -54,7 +55,7 @@ public class QueueConsumer {
 			connection.start();
 			
 			// 获取操作连接
-			session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			
 			// 得到消息发送的目的地对象，消息队列名称DESTINATION在ActveMQ管理界面可以创建或管理，地址：http://localhost:8161/admin/queues.jsp，默认会自动根据传入的参数创建对应名称的队列
 			destination = session.createQueue(DESTINATION);	//createQueue为点对点消息模式，createTopic为发布订阅模式

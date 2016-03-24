@@ -65,8 +65,8 @@ public class QueueProducer {
 			// 得到消息生产者（发送者）
 			producer = session.createProducer(destination);	//如果是要给个目的地发送消息，则创建producer是不指定目的地，在发送的时候在send方法中通过参数指定
 			
-			// 设置不持久化，仅为了学习，实际项目中根据需求和实际情况而定
-			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			// 设置不持久化，仅为了学习，实际项目中根据需求和实际情况而定（不持久化：DeliveryMode.NON_PERSISTENT，持久化：DeliveryMode.PERSISTENT）
+			producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 			
 			// 构造消息，此处消息内容写死，实际项目中可通过参数传入消息内容
 			send(session, producer);

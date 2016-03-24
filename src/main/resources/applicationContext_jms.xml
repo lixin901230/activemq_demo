@@ -20,20 +20,21 @@
 	<bean id="destQueue" class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg index="0" value="lx.spring.queue2"/>
 	</bean>
+	
+	<bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory"/>
+		<property name="defaultDestination" ref="destQueue"/>
+		<property name="deliveryMode" value="2"/>	<!-- 1：不持久化；2：持久化 -->
+	</bean>
+
 	<!-- 2）、订阅-发布模式消息（topic），构造参数lx.spring.topic2为 topic消息（订阅发布模式）队列服务名称 -->
 	<bean id="destTopic" class="org.apache.activemq.command.ActiveMQTopic">
 		<constructor-arg index="0" value="lx.spring.topic2"/>
 	</bean>
 	
-	<bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="connectionFactory"/>
-		<property name="defaultDestination" ref="destQueue"/>
-		<property name="deliveryMode" value="1"/>	<!-- 1：不持久化；2：持久化 -->
-	</bean>
-	
 	<bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="connectionFactory"/>
 		<property name="defaultDestination" ref="destTopic"/>
-		<property name="deliveryMode" value="1"/>	<!-- 1：不持久化；2：持久化 -->
+		<property name="deliveryMode" value="2"/>	<!-- 1：不持久化；2：持久化 -->
 	</bean>
 </beans>

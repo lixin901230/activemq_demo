@@ -47,8 +47,27 @@
 		请求-应答方式并不是JMS规范系统默认提供的一种通信方式，而是通过在现有通信方式的基础上稍微运用一点技巧实现的
 		在JMS里面，如果要实现请求/应答的方式，可以利用JMSReplyTo和JMSCorrelationID消息头来将通信的双方关联起来。
 		另外，QueueRequestor和TopicRequestor能够支持简单的请求/应答过程。
-
-原文引用：
-http://shmilyaw-hotmail-com.iteye.com/blog/1897635
+		
+消息持久化：
+	持久化配置修改activemq/conf/activemq.xml内容，参考本示例附带的activemq.xml文件中的配置：
+	<!-- JDBC方式消息持久化：mysql持久化bean -->
+	<bean id="mysql-ds" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost/activemq_persistence?relaxAutoCommit=true"/>
+		<property name="username" value="root"/>
+		<property name="password" value="admin"/>
+		<property name="poolPreparedStatements" value="true"/>
+	</bean>
+	
+	<!-- 配置JDBC适配器 -->
+	<persistenceAdapter>
+		<!-- dataSource指定持久化数据库的bean，createTablesOnStartup是否在启动的时候创建数据表，
+			默认值是true，这样每次启动都会去创建数据表了，一般是第一次启动的时候设置为true，之后改成false。 -->
+		<jdbcPersistenceAdapter dataSource="#mysql-ds" createTablesOnStartup="false" />
+	</persistenceAdapter>
+	
+	
+部分引用：
+	http://shmilyaw-hotmail-com.iteye.com/blog/1897635
 
 

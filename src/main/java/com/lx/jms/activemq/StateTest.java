@@ -28,8 +28,8 @@ public class StateTest {
 	public static void main(String[] args) {
 		try {
 			String url= "service:jmx:rmi:///jndi/rmi://localhost:" 
-				+ RunActiveMQServer.connectorPort 
-				+ RunActiveMQServer.connectorPath;
+				+ RunBrokerServer.connectorPort 
+				+ RunBrokerServer.connectorPath;
 			
 			JMXServiceURL serviceURL = new JMXServiceURL(url);
 			JMXConnector connector = JMXConnectorFactory.connect(serviceURL);
@@ -37,7 +37,7 @@ public class StateTest {
 			MBeanServerConnection connection = connector.getMBeanServerConnection();
 			
 			// 需要注意的是，这里的jms-broker必须和上面配置的名称相同
-	        ObjectName name = new ObjectName(RunActiveMQServer.jmxDomainName+ ":BrokerName=localhost,Type=Broker");
+	        ObjectName name = new ObjectName(RunBrokerServer.jmxDomainName+ ":BrokerName=localhost,Type=Broker");
 	        BrokerViewMBean mBean = (BrokerViewMBean)MBeanServerInvocationHandler.newProxyInstance(connection,  
 	        		name, BrokerViewMBean.class, true);
 	        // System.out.println(mBean.getBrokerName());

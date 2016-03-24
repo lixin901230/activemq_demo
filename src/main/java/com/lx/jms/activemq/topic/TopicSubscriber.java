@@ -87,7 +87,7 @@ public class TopicSubscriber {
 			
 			// 方式2、注册消息处理器，异步接收处理消息
 			messageConsumer.setMessageListener(new MsgListener());
-			Thread.sleep(10000);	//休眠10秒等待接收消息再关闭，若不休眠，测试时可以不关闭session和connection进行测试
+			Thread.sleep(60000);	//休眠10秒等待接收消息再关闭，若不休眠，测试时可以不关闭session和connection进行测试
 			
 		} catch (Exception e) {
 			e.printStackTrace();

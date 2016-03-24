@@ -63,7 +63,7 @@ public class TopicPublisher {
 			
 			producer = session.createProducer(destination);	//如果是给多方发送的话，此处不指定目标，设置为null
 			
-			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			producer.setDeliveryMode(DeliveryMode.PERSISTENT);	//不持久化：NON_PERSISTENT；持久化：PERSISTENT
 			sendMessage(session, producer);
 			
 			Thread.sleep(1000);
