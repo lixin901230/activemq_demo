@@ -98,8 +98,9 @@ public class QueueProducer {
 		try {
 			//构造消息，此处消息内容写死
 			for (int j = 0; j < 10; j++) {
-				TextMessage message = session.createTextMessage("ActiveMQ 发送消息"+j);
-				System.out.println("发送消息：ActiveMQ 发送消息"+j);
+				String msg = "Queue消息：ActiveMQ 第"+j+"条消息";
+				TextMessage message = session.createTextMessage(msg);
+				System.out.println("发送消息："+msg);
 				
 				//发送消息到目的地
 				producer.send(message);

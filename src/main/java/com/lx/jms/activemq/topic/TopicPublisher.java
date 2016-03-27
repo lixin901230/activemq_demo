@@ -85,7 +85,7 @@ public class TopicPublisher {
 		
 		for (int i = 1; i <= 5; i++) {
 			
-			String message = "第" + i + "条消息";
+			String message = "Topic消息：第" + i + "条消息";
 			
 			//Map消息
 			/*MapMessage msgObj = session.createMapMessage();

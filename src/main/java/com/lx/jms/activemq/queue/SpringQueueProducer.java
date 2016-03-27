@@ -41,8 +41,9 @@ public class SpringQueueProducer {
 			
 			@Override
 			public Message createMessage(Session session) throws JMSException {
-				TextMessage message = session.createTextMessage("Spring 集成 ActiveMQ 发送消息");
-				System.out.println("发送消息：Spring ActiveMQ 发送消息");
+				String msg = "Queue消息：Spring 集成 ActiveMQ 消息";
+				TextMessage message = session.createTextMessage(msg);
+				System.out.println("发送消息："+msg);
 				return message;
 			}
 		});
