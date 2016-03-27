@@ -48,20 +48,25 @@ public class TopicSubscriber {
 		MessageConsumer messageConsumer = null;
 		
 		try {
+			String clientID = "client_1";
 			connectionFactory = new ActiveMQConnectionFactory(
 					ActiveMQConnection.DEFAULT_USER, 
 					ActiveMQConnection.DEFAULT_PASSWORD, 
 					brokerURL);
 			
 			connection = connectionFactory.createConnection();
+			connection.setClientID(clientID);	//持久订阅需要设置clientID
 			connection.start();
 			
 			//获取操作连接,默认自动向服务器发送接收成功的响应
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			
-			destination = session.createTopic(DESTINATION);
+			destination = session.createTopic(DESTINATION);	 //Topic名称
 			
-			messageConsumer = session.createConsumer(destination);
+			//普通订阅
+			//messageConsumer = session.createConsumer(destination);
+			//持久订阅（注意：持久订阅需要为connection设置clientID，并且发布者需要开启持久模式）
+			messageConsumer = session.createDurableSubscriber((Topic) destination, clientID);
 			
 			//方式1、阻塞式接收消息
 			/*while(true) {

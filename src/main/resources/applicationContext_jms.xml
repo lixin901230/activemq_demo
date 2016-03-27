@@ -37,4 +37,35 @@
 		<property name="defaultDestination" ref="destTopic"/>
 		<property name="deliveryMode" value="2"/>	<!-- 1：不持久化；2：持久化 -->
 	</bean>
+	
+	<!-- 消息发送方: 配置connectionFactory
+		在消息发送时，需要为消息发送方配置一个clientIDPrefix的一个属性，该属性来表示那个消费者可以获得此消息，配置文件如下: -->
+	<!-- <bean id="jmsSenderFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+	  <property name="connectionFactory">
+	    <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+	      <property name="brokerURL" value="${jms.sendBrokerURL}">
+	      </property>
+	      <property name="useAsyncSend" value="true"></property>
+	      clinetIDPrefix属性
+	      <property name="clientIDPrefix" value="${jms.senderClientIDPrefix)"></property>
+	    </bean>
+	  </property>
+	  <property name="maxConnections" value="100"></property>
+	</bean> -->
+	<!-- clientIDPrefix：指定了consumer的clientID的前缀，符合此前缀规则的consumer将成为该TOPIC的持久订阅者。 -->
+	
+	<!-- 消息接收者 -->
+	<!--异步调用消息
+		http://www.tuicool.com/articles/imiuia -->
+	<!-- <bean id="receive"
+	  class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	  <property name="connectionFactory" ref="jmsReceiverFactory"></property>
+	  <property name="destinationName" value="${jms.receiveDestinationName}"></property>
+	  <property name="messageListener" ref="messageListener"></property>
+	  <property name="sessionAcknowledgeMode" value="1"></property>
+	  <property name="subscriptionDurable" value="true"></property>
+	  <property name="pubSubDomain" value="true"></property>
+	  <property name="clientId" value="${jms.receiverClientId}"></property>
+	  <property name="durableSubscriptionName" value="${jms.receiverClientId}"></property>
+	</bean> -->
 </beans>
