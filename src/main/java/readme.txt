@@ -49,35 +49,48 @@
 		另外，QueueRequestor和TopicRequestor能够支持简单的请求/应答过程。
 		
 消息持久化：
+	（ActiveMQ持久化方式：AMQ、KahaDB、JDBC、LevelDB，本示例只做KahaDB 和 JDBC 方式的持久化配置demo）
+	
 	持久化配置修改activemq/conf/activemq.xml内容，参考本示例附带的activemq.xml文件中的配置：
+	
+	一、JDBC 方式消息持久化
 	1、使用mysql进行持久化方式：
 		1）、将mysql-connector-java-5.1.9.jar包拷贝到activemq安装目录下的lib目录下
-		2）、修改activemq安装目录下conf目录中的active.xml配置：
-		在broker配置上面加上mysql数据源配置：
-		<!-- JDBC方式消息持久化：mysql持久化bean -->
-		<bean id="mysql-ds" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-			<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-			<property name="url" value="jdbc:mysql://localhost/activemq_persistence?relaxAutoCommit=true"/>
-			<property name="username" value="root"/>
-			<property name="password" value="admin"/>
-			<property name="poolPreparedStatements" value="true"/>
-		</bean>
+		2）、在mysql数据库中新建数据库，如我创建的库名为：activemq_persistence，后面配置消息持久化数据源时使用（注意：不需要建表，activemq会自动在我们指定的数据源的库中建表）
+		3）、修改activemq安装目录下conf目录中的active.xml配置：
+			（1）在broker配置上面加上mysql数据源配置：
+			<!-- JDBC：mysql持久化bean -->
+			<bean id="mysql-ds" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+				<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://localhost/activemq_persistence?relaxAutoCommit=true"/>
+				<property name="username" value="root"/>
+				<property name="password" value="admin"/>
+				<property name="poolPreparedStatements" value="true"/>
+			</bean>
+			说明：Oracle 与 SQL Server 的持久化数据源 bean配置 此处不再配置，自行查阅官方文档：http://activemq.apache.org/jdbc-support.html，或自己到网上查阅其他资料
 		
-		修改persistenceAdapter持久化适配器配置：
-		<!-- 消息持久化适配器 -->
-		<persistenceAdapter>
-			<!-- 方式1：KahaDB 文件储存持久化
-			<kahaDB directory="${activemq.data}/kahadb" journalMaxFileLength="32mb"/> -->
+			（2）修改persistenceAdapter持久化适配器配置：
+			<!-- 消息持久化适配器 
+				方式1：MySql 数据库存储持久化；
+					属性dataSource指定持久化数据库数据源的bean配置，createTablesOnStartup是否在启动的时候创建数据表，
+					默认值是true，这样每次启动都会去创建数据表了，一般是第一次启动的时候设置为true，之后改成false。  -->
+			<persistenceAdapter>
+				<jdbcPersistenceAdapter dataSource="#mysql-ds" createTablesOnStartup="false" />
+	        </persistenceAdapter>
+		
+			（3）配置完毕 ，启动activemq服务，会发现刚新建的数据库中多了三张表，分别是：
+				1）activemq_acks：ActiveMQ的签收信息；
+				2）activemq_lock：ActiveMQ的锁信息；
+				3）activemq_msgs：ActiveMQ的消息的信息
 			
-			<!-- 方式2：MySql 数据库存储持久化  -->
-			 		属性dataSource指定持久化数据库数据源的bean配置，createTablesOnStartup是否在启动的时候创建数据表，
-					默认值是true，这样每次启动都会去创建数据表了，一般是第一次启动的时候设置为true，之后改成false。
-			<jdbcPersistenceAdapter dataSource="#mysql-ds" createTablesOnStartup="false" />
+			（4）运行代码demo示例测试
+			
+	二、Kahadb 文件数据库持久化消息（activemq默认持久化方式）
+		<!-- 消息持久化适配器 
+			方式2：KahaDB 文件储存持久化； -->
+		<persistenceAdapter>
+			<kahaDB directory="${activemq.data}/kahadb" journalMaxFileLength="32mb"/>
         </persistenceAdapter>
-	
-	2、使用activemq 默认的持久化方式 kahadb 共享文件
+		
 部分引用：
 	http://shmilyaw-hotmail-com.iteye.com/blog/1897635
-
-
-
