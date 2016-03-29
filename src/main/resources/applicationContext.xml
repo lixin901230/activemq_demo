@@ -15,6 +15,17 @@
 	
 	<!-- 指定注解扫描包范围 -->
 	<context:component-scan base-package="com.lx.jms"></context:component-scan>
+	
+	<!-- 外部属性文件的定义  -->  
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+        <property name="locations">   
+            <list>   
+                <value>classpath:init.properties</value>   
+                <value>classpath:jms_reciever.properties</value>   
+                <value>classpath:jms_sender.properties</value>   
+            </list>  
+        </property>  
+    </bean>
 
 	<!-- Spring bean 获取工具类注入 -->
 	<bean id="WebApplicationContext" class="com.lx.jms.utils.ApplicationContextHelper"></bean>  
