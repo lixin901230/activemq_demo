@@ -1,10 +1,12 @@
 package com.lx.jms.activemq.topic;
 
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import org.springframework.jms.core.JmsTemplate;
 
+import com.lx.jms.bean.UserInfo;
 import com.lx.jms.utils.SpringContextUtil;
 
 /**
@@ -24,7 +26,7 @@ public class SpringTopicSubscriber {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String xmlPath = "classpath:applicationContext.xml";
+		String xmlPath = "classpath:applicationContext_jms_receiver.xml";
 		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
 		SpringTopicSubscriber subscriber = (SpringTopicSubscriber) contextUtil.getBean("subscriber");
 		subscriber.receiveMsg();
@@ -36,14 +38,28 @@ public class SpringTopicSubscriber {
 	 * 接收消息
 	 */
 	public void receiveMsg() {
-		try {
-			TextMessage message = (TextMessage) jmsTemplate.receive();
-			if(message != null) {
-				System.out.println("收到消息："+message.getText());
+		//方式1：
+		 try {
+			Message message = jmsTemplate.receive();	//同步接收消息
+			if (message instanceof TextMessage) {
+				TextMessage textMessage = (TextMessage) message;
+				if(message != null) {
+					System.out.println("收到消息："+textMessage.getText());
+				}
 			}
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
+		
+		//方式2：对象转换器转啊混处理后接受
+		/*Object object = jmsTemplate.receiveAndConvert();
+		if(object instanceof UserInfo) {
+			UserInfo userInfo = (UserInfo) object;
+			System.out.println(userInfo);
+		} else {
+			String className = object.getClass().getName();
+			System.out.println(className);
+		}*/
 	}
 	
 	public JmsTemplate getJmsTemplate() {

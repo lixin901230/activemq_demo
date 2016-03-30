@@ -15,24 +15,28 @@
 	
 	<!-- 指定注解扫描包范围 -->
 	<context:component-scan base-package="com.lx.jms"></context:component-scan>
+
+	<!-- 加载配置文件：通配符加载多个资源文件，spring 3.1 后默认使用该 @link org.springframework.context.support.PropertySourcesPlaceholderConfigurer}加载资源配置，
+		并且PropertyPlaceholderConfigurer与PropertySourcesPlaceholderConfigurer两种加载形式只能同时使用一种 -->
+	<context:property-placeholder location="classpath*:src/main/resources/*.properties"/>
 	
-	<!-- 外部属性文件的定义  -->  
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+	<!-- 加载配置文件 -->  
+    <!-- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
         <property name="locations">   
-            <list>   
+            <list>
                 <value>classpath:init.properties</value>   
                 <value>classpath:jms_reciever.properties</value>   
                 <value>classpath:jms_sender.properties</value>   
             </list>  
         </property>  
-    </bean>
+    </bean> -->
+	
 
 	<!-- Spring bean 获取工具类注入 -->
 	<bean id="WebApplicationContext" class="com.lx.jms.utils.ApplicationContextHelper"></bean>  
 	
 	<!-- 导入springjdbc注入配置 -->
-	<!-- 若采用 Mysql 做消息持久化，则使用该配置加载数据源等信息
-	<import resource="applicationContext-jdbc.xml"/> -->
+	<!-- <import resource="applicationContext-jdbc.xml"/> -->
 	
 	<import resource="applicationContext-bean.xml"/>
 	

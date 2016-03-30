@@ -4,16 +4,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
-		
-	<description>jms 消息发送者 配置（含点对点模式（queue消息）、订阅-发布模式（topic消息））</description>
+	
+	<description>jms 消息发接收 配置（含点对点模式（queue消息）、订阅-发布模式（topic消息））</description>
 	
 	<!--创建连接池-->
-	<bean id="jmsSenderFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+	<bean id="jmsReceiverFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
 		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
 				<property name="brokerURL" value="tcp://localhost:61616"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
 				<property name="useAsyncSend" value="true"/>				<!-- 异步发送 -->
-				<property name="clientIDPrefix" value="client_spring_"/>	<!-- 持久化订阅需要指定clientIDPrefix； clientIDPrefix：指定了consumer的clientID的前缀，符合此前缀规则的consumer将成为该TOPIC的持久订阅者。 -->
 			</bean>
 		</property>
 		<property name="maxConnections" value="100"/>
@@ -30,18 +29,30 @@
 	
 	<!-- Spring提供的JMS工具类，它可以进行消息发送、接收等 -->
 	<bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="jmsSenderFactory"/>
+		<property name="connectionFactory" ref="jmsReceiverFactory"/>
 		<!-- 设置defaultDestinationName与设置defaultDestination二选一，只设置defaultDestinationName，则Spring会根据设置的该目标名称创建一个destination
-		<property name="defaultDestinationName" ref="lx.spring.topic"/> -->
+		<property name="defaultDestinationName" ref="lx.spring.queue"/> -->
 		<property name="defaultDestination" ref="destinationQueue"/>
 		<property name="deliveryMode" value="2"/>				<!-- 1：不持久化；2：持久化 -->
-		<property name="pubSubDomain" value="false"/>			<!-- pubSubDomain却别消息模式，false：点对点模式，true：订阅-发布模式 -->
+		<property name="pubSubDomain" value="false"/>			<!-- 区别它采用的模式为false是p2p为true是订阅 -->
 		<property name="messageConverter" ref="jmsConverter"/>	<!-- 未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器； -->
 	</bean>
 	
-	<!-- 消息生产者 -->
-	<bean id="producer" class="com.lx.jms.activemq.queue.SpringQueueProducer">
+	<!-- 方式1：阻塞式处理消息，自己通过jmsTemplate提供的接口同步接收处理消息 -->
+	<bean id="consumer" class="com.lx.jms.activemq.queue.SpringQueueConsumer">
 		<property name="jmsTemplate" ref="queueJmsTemplate"/>
+	</bean>
+	
+	<!-- 方式2：异步式处理消息，自己通过注入自定义的消息处理监听器来异步消费处理消息 -->
+	<bean id="receiveQueueMsg" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	  	<property name="connectionFactory" ref="jmsReceiverFactory"></property>
+	  	<property name="destinationName" value="lx.spring.queue"></property>
+	  	<property name="sessionAcknowledgeMode" value="1"></property>
+	  	<property name="pubSubDomain" value="false"></property>	<!-- 区别它采用的模式为false是p2p为true是订阅 -->
+	  	<property name="subscriptionDurable" value="true"></property>
+	  	<property name="messageListener" ref="messageListener"></property>
+	  	<property name="clientId" value="client_spring_"></property>
+	  	<property name="durableSubscriptionName" value="client_spring_"></property>
 	</bean>
 	
 	
@@ -55,7 +66,7 @@
 	
 	<!-- Spring提供的JMS工具类，它可以进行消息发送、接收等 -->
 	<bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="jmsSenderFactory"/>
+		<property name="connectionFactory" ref="jmsReceiverFactory"/>
 		<!-- 设置defaultDestinationName与设置defaultDestination二选一，只设置defaultDestinationName，则Spring会根据设置的该目标名称创建一个destination
 		<property name="defaultDestinationName" ref="lx.spring.topic"/> -->
 		<property name="defaultDestination" ref="destinationTopic"/>
@@ -64,16 +75,38 @@
 		<property name="messageConverter" ref="jmsConverter"/>	<!-- 未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器； -->
 	</bean>
 	
-	<!-- 消息发布者 -->
-	<bean id="publisher" class="com.lx.jms.activemq.topic.SpringTopicPublisher">
+	<!-- 方式1：阻塞式处理消息，自己通过jmsTemplate提供的接口同步接收处理消息 -->
+	<bean id="subscriber" class="com.lx.jms.activemq.topic.SpringTopicSubscriber">
 		<property name="jmsTemplate" ref="topicJmsTemplate"/>
 	</bean>
 	
-	<!-- #####################	公共部分（自定义消息转换器）	##################### -->
+	<!-- 方式2：异步式处理消息，自己通过注入自定义的消息处理监听器来异步消费处理消息 -->
+	<bean id="receiveTopicMsg" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	  	<property name="connectionFactory" ref="jmsReceiverFactory"></property>
+	  	<property name="destinationName" value="lx.spring.topic"></property>
+	  	<property name="sessionAcknowledgeMode" value="1"></property>
+	  	<property name="pubSubDomain" value="true"></property>	<!-- 区别它采用的模式为false是p2p为true是订阅 -->
+	  	<property name="subscriptionDurable" value="true"></property>
+	  	<property name="messageListener" ref="messageListener"></property>
+	  	<property name="clientId" value="client_spring_"></property>
+	  	<property name="durableSubscriptionName" value="client_spring_"></property>
+	</bean>
 	
+	
+	<!-- #####################	公共部分（自定义消息转换器、自定义异步接收处理消息监听器）	##################### -->
+	
+	<!-- 异步接受消息————消息监听器 -->
+	<bean id="messageListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">  
+        <property name="delegate" ref="delegate"></property>	<!-- 将消息处理委派给一个普通的java类，并通过defaultListenerMethod属性来指定该普通类中用来处理消息的方法 -->
+        <property name="defaultListenerMethod" value="onMessage"></property>
+        <property name="messageConverter" ref="jmsConverter"></property>
+    </bean>
+    <!-- 消息处理：MessageListenerAdapter通过将消息委派给当前这个普通的java类来处理消息 -->
+    <bean id="delegate" class="com.lx.jms.activemq.listener.ConsumerMessageListener"></bean>
+    
 	<!-- 消息转换器 -->
     <bean id="jmsConverter" class="com.lx.jms.activemq.convert.CustomJmsConverter"></bean>
-    <!-- spring 内置默认的消息转换器，在未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器；
+	<!-- spring 内置默认的消息转换器，在未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器；
     	支持转换处理的消息类型： TextMessage、BytesMessage、MapMessage、MapMessage、ObjectMessage（转换的对象需要实现Serializable）
 	<bean id="defaultMessageConverter" class="org.springframework.jms.support.converter.SimpleMessageConverter"></bean> -->
 </beans>

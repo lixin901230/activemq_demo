@@ -25,10 +25,12 @@ public class SpringQueueProducer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String xmlPath = "classpath:applicationContext.xml";
+		String xmlPath = "classpath:applicationContext_jms_sender.xml";
+//		xmlPath = "classpath:applicationContext.xml";
 		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
 		SpringQueueProducer producer = (SpringQueueProducer) contextUtil.getBean("producer");
 		producer.sendMsg();
+		System.exit(-1);
 	}
 	
 	private JmsTemplate jmsTemplate;

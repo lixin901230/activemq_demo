@@ -18,23 +18,22 @@
 	</bean>
 	
 	<!-- 声明ActiveMQ消息目标,目标可以是一个队列ActiveMQQueue，也可以是一个主题ActiveMQTopic；
-		1）、点对点模式消息（queue），构造参数lx.spring.queue2为 队列消息（点对点模式）队列服务名称 -->
+		1）、点对点模式消息（queue），构造参数lx.spring.queue为 队列消息（点对点模式）队列服务名称 -->
 	<bean id="destQueue" class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg index="0" value="lx.spring.queue2"/>
+		<constructor-arg index="0" value="lx.spring.queue"/>
 	</bean>
-	
 	<bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="pooledConnectionFactory"/>
 		<property name="defaultDestination" ref="destQueue"/>
 		<property name="deliveryMode" value="2"/>		<!-- 1：不持久化；2：持久化 -->
 		<property name="pubSubDomain" value="false"/>	<!-- 区别它采用的模式为false是p2p为true是订阅 -->
 	</bean>
-
-	<!-- 2）、订阅-发布模式消息（topic），构造参数lx.spring.topic2为 topic消息（订阅发布模式）队列服务名称 -->
-	<bean id="destTopic" class="org.apache.activemq.command.ActiveMQTopic">
-		<constructor-arg index="0" value="lx.spring.topic2"/>
-	</bean>
 	
+	
+	<!-- 2）、订阅-发布模式消息（topic），构造参数lx.spring.topic为 topic消息（订阅发布模式）队列服务名称 -->
+	<bean id="destTopic" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg index="0" value="lx.spring.topic"/>
+	</bean>
 	<bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="pooledConnectionFactory"/>
 		<property name="defaultDestination" ref="destTopic"/>

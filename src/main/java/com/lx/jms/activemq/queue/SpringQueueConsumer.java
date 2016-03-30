@@ -22,10 +22,18 @@ public class SpringQueueConsumer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String xmlPath = "classpath:applicationContext.xml";
+		String xmlPath = "classpath:applicationContext_jms_receiver.xml";
+//		xmlPath = "classpath:applicationContext.xml";
 		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
 		SpringQueueConsumer consumer = (SpringQueueConsumer) contextUtil.getBean("consumer");
 		consumer.receiveMsg();
+		/*int a = 0;
+		while(true) {
+			consumer.receiveMsg();
+			if(a == 4) {
+				break;
+			}
+		}*/
 	}
 	
 	private JmsTemplate jmsTemplate;
