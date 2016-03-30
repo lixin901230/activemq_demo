@@ -92,17 +92,17 @@
 	  	<property name="durableSubscriptionName" value="client_spring_"></property>
 	</bean>
 	
-	
 	<!-- #####################	公共部分（自定义消息转换器、自定义异步接收处理消息监听器）	##################### -->
 	
 	<!-- 异步接受消息————消息监听器 -->
 	<bean id="messageListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">  
-        <property name="delegate" ref="delegate"></property>	<!-- 将消息处理委派给一个普通的java类，并通过defaultListenerMethod属性来指定该普通类中用来处理消息的方法 -->
+        <property name="delegate" ref="delegate"></property>
         <property name="defaultListenerMethod" value="onMessage"></property>
         <property name="messageConverter" ref="jmsConverter"></property>
     </bean>
-    <!-- 消息处理：MessageListenerAdapter通过将消息委派给当前这个普通的java类来处理消息 -->
-    <bean id="delegate" class="com.lx.jms.activemq.listener.ConsumerMessageListener"></bean>
+    
+    <!-- 消息处理 -->
+    <bean id="delegate" class="com.lx.jms.activemq.listener.JmsBusinessProcess"></bean>
     
 	<!-- 消息转换器 -->
     <bean id="jmsConverter" class="com.lx.jms.activemq.convert.CustomJmsConverter"></bean>
