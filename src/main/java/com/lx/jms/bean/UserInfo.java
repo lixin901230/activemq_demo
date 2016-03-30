@@ -58,5 +58,11 @@ public class UserInfo implements Serializable {
 	public void setBodyWeight(Float bodyWeight) {
 		this.bodyWeight = bodyWeight;
 	}
+
+	@Override
+	public String toString() {
+		return "UserInfo [id=" + id + ", age=" + age + ", name=" + name
+				+ ", money=" + money + ", bodyWeight=" + bodyWeight + "]";
+	}
 	
 }

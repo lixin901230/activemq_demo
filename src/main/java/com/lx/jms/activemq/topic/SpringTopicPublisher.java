@@ -8,6 +8,7 @@ import javax.jms.TextMessage;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
+import com.lx.jms.bean.UserInfo;
 import com.lx.jms.utils.SpringContextUtil;
 
 /**
@@ -27,7 +28,7 @@ public class SpringTopicPublisher {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String xmlPath = "classpath:applicationContext.xml";
+		String xmlPath = "classpath:applicationContext_jms_sender.xml";
 		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
 		SpringTopicPublisher publisher = (SpringTopicPublisher) contextUtil.getBean("publisher");
 		publisher.sendMsg();
@@ -39,7 +40,8 @@ public class SpringTopicPublisher {
 	 * 发送消息
 	 */
 	public void sendMsg() {
-		jmsTemplate.send(new MessageCreator() {
+		//方式1：
+		/*jmsTemplate.send(new MessageCreator() {
 			
 			@Override
 			public Message createMessage(Session session) throws JMSException {
@@ -48,7 +50,11 @@ public class SpringTopicPublisher {
 				System.out.println("发送消息："+msg);
 				return message;
 			}
-		});
+		});*/
+		
+		//方式2：对象转换器转处理后发送
+		UserInfo userInfo = new UserInfo("11", 21, "lx", 10.0, 70.0f);
+		jmsTemplate.convertAndSend(userInfo);
 	}
 	
 	public JmsTemplate getJmsTemplate() {

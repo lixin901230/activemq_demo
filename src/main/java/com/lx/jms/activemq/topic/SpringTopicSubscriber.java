@@ -5,6 +5,7 @@ import javax.jms.TextMessage;
 
 import org.springframework.jms.core.JmsTemplate;
 
+import com.lx.jms.bean.UserInfo;
 import com.lx.jms.utils.SpringContextUtil;
 
 /**
@@ -24,7 +25,7 @@ public class SpringTopicSubscriber {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String xmlPath = "classpath:applicationContext.xml";
+		String xmlPath = "classpath:applicationContext_jms_receiver.xml";
 		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
 		SpringTopicSubscriber subscriber = (SpringTopicSubscriber) contextUtil.getBean("subscriber");
 		subscriber.receiveMsg();
@@ -36,13 +37,22 @@ public class SpringTopicSubscriber {
 	 * 接收消息
 	 */
 	public void receiveMsg() {
-		try {
-			TextMessage message = (TextMessage) jmsTemplate.receive();
+		/*try {
+			TextMessage message = (TextMessage) jmsTemplate.receive();	//同步接收消息
 			if(message != null) {
 				System.out.println("收到消息："+message.getText());
 			}
 		} catch (JMSException e) {
 			e.printStackTrace();
+		}*/
+		
+		Object object = jmsTemplate.receiveAndConvert();
+		if(object instanceof UserInfo) {
+			UserInfo userInfo = (UserInfo) object;
+			System.out.println(userInfo);
+		} else {
+			String className = object.getClass().getName();
+			System.out.println(className);
 		}
 	}
 	
