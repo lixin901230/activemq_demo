@@ -43,7 +43,7 @@
 	
 	
 	<!-- 方式2：（推荐使用监听异步处理消息）异步式处理消息，自己通过注入自定义的消息处理监听器来异步消费处理消息 -->
-	<!-- <bean id="receiveQueueMsg" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	<bean id="receiveQueueMsg" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 	  	<property name="connectionFactory" ref="jmsReceiverFactory"></property>
 	  	<property name="destinationName" value="lx.spring.queue"></property>
 	  	<property name="sessionAcknowledgeMode" value="1"></property>
@@ -51,7 +51,7 @@
 	  	<property name="subscriptionDurable" value="true"></property>
 	  	<property name="messageListener" ref="messageListener"></property>
 	  	<property name="clientId" value="client_spring_queue"></property>
-	</bean> -->
+	</bean>
 	
 	
 	<!-- #####################	订阅-发布模式消息	（topic）	##################### -->
