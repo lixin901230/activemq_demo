@@ -28,25 +28,31 @@ public class CustomJmsConverter implements MessageConverter {
 	public Object fromMessage(Message message) throws JMSException, MessageConversionException{
 		
 		logger.info("\n============JmsConverter——》fromMessage===============\n");
-		ObjectMessage objMessage = (ObjectMessage) message;
-		String dataFlag = objMessage.getStringProperty("dataFlag");
-		if("UserInfo".equalsIgnoreCase(dataFlag)) {
-			
-			UserInfo user = new UserInfo();
-			user.setId(objMessage.getStringProperty("id"));
-			user.setName(objMessage.getStringProperty("name"));
-			System.out.println(user);
-			return user;
-		} else if("Department".equalsIgnoreCase(dataFlag)) {
-			
-			Department department = new Department();
-			department.setId(objMessage.getStringProperty("id"));
-			department.setName(objMessage.getStringProperty("name"));
-			System.out.println(department);
-			return department;
-		} else if("TextMessage".equalsIgnoreCase(dataFlag)) {
-			
-			System.out.println(objMessage.getStringProperty("textMsgName"));
+		if(message instanceof TextMessage) {
+			TextMessage textMessage = (TextMessage) message;
+			String text = textMessage.getText();
+			System.out.println(text);
+		} else {
+			ObjectMessage objMessage = (ObjectMessage) message;
+			String dataFlag = objMessage.getStringProperty("dataFlag");
+			if("UserInfo".equalsIgnoreCase(dataFlag)) {
+				
+				UserInfo user = new UserInfo();
+				user.setId(objMessage.getStringProperty("id"));
+				user.setName(objMessage.getStringProperty("name"));
+				System.out.println(user);
+				return user;
+			} else if("Department".equalsIgnoreCase(dataFlag)) {
+				
+				Department department = new Department();
+				department.setId(objMessage.getStringProperty("id"));
+				department.setName(objMessage.getStringProperty("name"));
+				System.out.println(department);
+				return department;
+			} else if("TextMessage".equalsIgnoreCase(dataFlag)) {
+				
+				System.out.println(objMessage.getStringProperty("textMsgName"));
+			}
 		}
 		return null;
 	}

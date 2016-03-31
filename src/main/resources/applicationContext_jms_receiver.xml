@@ -19,10 +19,11 @@
 	</bean>
 	
 	
-	<!-- #####################	点对点模式消息	##################### -->
+	<!-- #####################	点对点模式消息（queue）	##################### -->
 	
-	<!-- 1、点对点模式消息（queue）
-			构造一个名称为lx.spring.queue的queue消息队列 -->
+	<!-- 1、点对点模式消息（queue）-->
+	<!-- 方式1：阻塞式处理消息，自己通过jmsTemplate提供的接口同步接收处理消息 -->
+	<!-- 构造一个名称为lx.spring.queue的queue消息目的地队列，此步也可在jmsTemplate中通过设置defaultDestinationName取代-->
 	<bean id="destinationQueue" class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg index="0" value="lx.spring.queue"/>
 	</bean>
@@ -30,36 +31,35 @@
 	<!-- Spring提供的JMS工具类，它可以进行消息发送、接收等 -->
 	<bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="jmsReceiverFactory"/>
-		<!-- 设置defaultDestinationName与设置defaultDestination二选一，只设置defaultDestinationName，则Spring会根据设置的该目标名称创建一个destination
-		<property name="defaultDestinationName" ref="lx.spring.queue"/> -->
+		<!-- 设置defaultDestinationName与设置defaultDestination二选一，只设置defaultDestinationName，则Spring会根据设置的该目标名称创建一个destination；<property name="defaultDestinationName" ref="lx.spring.queue"/> -->
 		<property name="defaultDestination" ref="destinationQueue"/>
-		<property name="deliveryMode" value="2"/>				<!-- 1：不持久化；2：持久化 -->
-		<property name="pubSubDomain" value="false"/>			<!-- 区别它采用的模式为false是p2p为true是订阅 -->
+		<property name="pubSubDomain" value="false"/>			<!-- pubSubDomain区别消息模式，false：点对点模式，true：订阅-发布模式 -->
 		<property name="messageConverter" ref="jmsConverter"/>	<!-- 未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器； -->
 	</bean>
 	
-	<!-- 方式1：阻塞式处理消息，自己通过jmsTemplate提供的接口同步接收处理消息 -->
 	<bean id="consumer" class="com.lx.jms.activemq.queue.SpringQueueConsumer">
 		<property name="jmsTemplate" ref="queueJmsTemplate"/>
 	</bean>
 	
-	<!-- 方式2：异步式处理消息，自己通过注入自定义的消息处理监听器来异步消费处理消息 -->
+	
+	<!-- 方式2：（推荐使用监听异步处理消息）异步式处理消息，自己通过注入自定义的消息处理监听器来异步消费处理消息 -->
 	<bean id="receiveQueueMsg" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 	  	<property name="connectionFactory" ref="jmsReceiverFactory"></property>
 	  	<property name="destinationName" value="lx.spring.queue"></property>
 	  	<property name="sessionAcknowledgeMode" value="1"></property>
-	  	<property name="pubSubDomain" value="false"></property>	<!-- 区别它采用的模式为false是p2p为true是订阅 -->
+	  	<property name="pubSubDomain" value="false"></property>
 	  	<property name="subscriptionDurable" value="true"></property>
 	  	<property name="messageListener" ref="messageListener"></property>
-	  	<property name="clientId" value="client_spring_"></property>
-	  	<property name="durableSubscriptionName" value="client_spring_"></property>
+	  	<property name="clientId" value="client_spring_queue"></property>
 	</bean>
 	
 	
-	<!-- #####################	订阅-发布模式消息		##################### -->
+	<!-- #####################	订阅-发布模式消息	（topic）	##################### -->
 	
-	<!-- 2、订阅-发布模式消息（topic）
-			构造一个名称为lx.spring.topic的topic消息队列 -->
+	<!-- 2、订阅-发布模式消息（topic） -->
+	<!-- 方式1：阻塞式处理消息，自己通过jmsTemplate提供的接口同步接收处理消息 -->
+	
+	<!-- 构造一个名称为lx.spring.topic的topic消息目的地队列，此步也可在jmsTemplate中通过设置defaultDestinationName取代 -->
 	<bean id="destinationTopic" class="org.apache.activemq.command.ActiveMQTopic">
 		<constructor-arg index="0" value="lx.spring.topic"/>
 	</bean>
@@ -67,29 +67,26 @@
 	<!-- Spring提供的JMS工具类，它可以进行消息发送、接收等 -->
 	<bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="jmsReceiverFactory"/>
-		<!-- 设置defaultDestinationName与设置defaultDestination二选一，只设置defaultDestinationName，则Spring会根据设置的该目标名称创建一个destination
-		<property name="defaultDestinationName" ref="lx.spring.topic"/> -->
+		<!-- 设置defaultDestinationName与设置defaultDestination二选一，只设置defaultDestinationName，则Spring会根据设置的该目标名称创建一个destination；<property name="defaultDestinationName" ref="lx.spring.topic"/> -->
 		<property name="defaultDestination" ref="destinationTopic"/>
-		<property name="deliveryMode" value="2"/>				<!-- 1：不持久化；2：持久化 -->
-		<property name="pubSubDomain" value="true"/>			<!-- 区别它采用的模式为false是p2p为true是订阅 -->
-		<property name="messageConverter" ref="jmsConverter"/>	<!-- 未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器； -->
+		<property name="pubSubDomain" value="true"/>				<!-- pubSubDomain区别消息模式，false：点对点模式，true：订阅-发布模式 -->
+		<property name="messageConverter" ref="jmsConverter"/>		<!-- 未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器； -->
 	</bean>
 	
-	<!-- 方式1：阻塞式处理消息，自己通过jmsTemplate提供的接口同步接收处理消息 -->
 	<bean id="subscriber" class="com.lx.jms.activemq.topic.SpringTopicSubscriber">
 		<property name="jmsTemplate" ref="topicJmsTemplate"/>
 	</bean>
 	
-	<!-- 方式2：异步式处理消息，自己通过注入自定义的消息处理监听器来异步消费处理消息 -->
+	<!-- 方式2：（推荐使用监听异步处理消息）异步式处理消息，自己通过注入自定义的消息处理监听器来异步消费处理消息 -->
 	<bean id="receiveTopicMsg" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 	  	<property name="connectionFactory" ref="jmsReceiverFactory"></property>
 	  	<property name="destinationName" value="lx.spring.topic"></property>
 	  	<property name="sessionAcknowledgeMode" value="1"></property>
-	  	<property name="pubSubDomain" value="true"></property>	<!-- 区别它采用的模式为false是p2p为true是订阅 -->
+	  	<property name="pubSubDomain" value="true"></property>
 	  	<property name="subscriptionDurable" value="true"></property>
 	  	<property name="messageListener" ref="messageListener"></property>
-	  	<property name="clientId" value="client_spring_"></property>
-	  	<property name="durableSubscriptionName" value="client_spring_"></property>
+	  	<property name="clientId" value="client_spring_topic"></property>
+	  	<property name="durableSubscriptionName" value="client_spring_topic_listener_receive"></property>
 	</bean>
 	
 	<!-- #####################	公共部分（自定义消息转换器、自定义异步接收处理消息监听器）	##################### -->

@@ -11,6 +11,7 @@ public class JmsBusinessProcess implements JmsReceiveListener {
 	
 	@Override
 	public void onMessage(Object baseModel) {
+		System.out.println(">>>>>>>JmsBusinessProcess>>>>>>");
 		try {
 			if(baseModel instanceof UserInfo) {
 				
