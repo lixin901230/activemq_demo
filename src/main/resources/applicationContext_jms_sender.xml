@@ -34,8 +34,8 @@
 		<!-- 设置defaultDestinationName与设置defaultDestination二选一，只设置defaultDestinationName，则Spring会根据设置的该目标名称创建一个destination
 		<property name="defaultDestinationName" ref="lx.spring.topic"/> -->
 		<property name="defaultDestination" ref="destinationQueue"/>
-		<property name="deliveryMode" value="2"/>				<!-- 1：不持久化；2：持久化 -->
-		<property name="pubSubDomain" value="false"/>			<!-- pubSubDomain却别消息模式，false：点对点模式，true：订阅-发布模式 -->
+		<property name="deliveryMode" value="2"/>				<!-- 1：不持久化；2：持久化（默认） -->
+		<property name="pubSubDomain" value="false"/>			<!-- pubSubDomain区别消息模式，false：点对点模式，true：订阅-发布模式 -->
 		<property name="messageConverter" ref="jmsConverter"/>	<!-- 未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器； -->
 	</bean>
 	

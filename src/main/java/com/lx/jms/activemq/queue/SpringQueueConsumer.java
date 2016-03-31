@@ -1,6 +1,7 @@
 package com.lx.jms.activemq.queue;
 
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import org.springframework.jms.core.JmsTemplate;
@@ -25,15 +26,11 @@ public class SpringQueueConsumer {
 		String xmlPath = "classpath:applicationContext_jms_receiver.xml";
 //		xmlPath = "classpath:applicationContext.xml";
 		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
+		
 		SpringQueueConsumer consumer = (SpringQueueConsumer) contextUtil.getBean("consumer");
+		
+		//测试阻塞式接收消息
 		consumer.receiveMsg();
-		/*int a = 0;
-		while(true) {
-			consumer.receiveMsg();
-			if(a == 4) {
-				break;
-			}
-		}*/
 	}
 	
 	private JmsTemplate jmsTemplate;
@@ -43,11 +40,18 @@ public class SpringQueueConsumer {
 	 */
 	public void receiveMsg() {
 		try {
-			TextMessage message = (TextMessage) jmsTemplate.receive();
-			if(message != null) {
-				System.out.println("收到消息："+message.getText());
+			while(true) {
+				Message message = jmsTemplate.receive();	//阻塞接收消息（在接收到消息之前，在设置的连接超时时间内，一直处于阻塞状态）
+				if (message instanceof TextMessage) {
+					TextMessage textMessage = (TextMessage) message;
+					if(message != null) {
+						System.out.println("收到消息："+textMessage.getText());
+					}
+				} else {
+					throw new Exception("消息类型解析错误");
+				}
 			}
-		} catch (JMSException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -35,9 +35,6 @@
 	<!-- Spring bean 获取工具类注入 -->
 	<bean id="WebApplicationContext" class="com.lx.jms.utils.ApplicationContextHelper"></bean>  
 	
-	<!-- 导入springjdbc注入配置 -->
-	<!-- <import resource="applicationContext-jdbc.xml"/> -->
-	
 	<import resource="applicationContext-bean.xml"/>
 	
 	<import resource="applicationContext_jms.xml"/>

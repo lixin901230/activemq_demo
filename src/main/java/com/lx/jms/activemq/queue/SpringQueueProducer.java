@@ -1,5 +1,7 @@
 package com.lx.jms.activemq.queue;
 
+import java.util.Random;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -30,25 +32,33 @@ public class SpringQueueProducer {
 		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
 		SpringQueueProducer producer = (SpringQueueProducer) contextUtil.getBean("producer");
 		producer.sendMsg();
-		System.exit(-1);
+		System.exit(-1);	//发完消息结束进程
 	}
 	
 	private JmsTemplate jmsTemplate;
 	
 	/**
 	 * 发送消息
+	 * 	若要测试消息持久化：发送消息后，查看数据库：activemq_msgs，发现发送的消息都持久化到表中了
 	 */
 	public void sendMsg() {
-		jmsTemplate.send(new MessageCreator() {
+		
+		//循环发送5条消息
+		for (int i = 0; i < 5; i++) {
 			
-			@Override
-			public Message createMessage(Session session) throws JMSException {
-				String msg = "Queue消息：Spring 集成 ActiveMQ 消息";
-				TextMessage message = session.createTextMessage(msg);
-				System.out.println("发送消息："+msg);
-				return message;
-			}
-		});
+			final String count = String.valueOf(i);
+			jmsTemplate.send(new MessageCreator() {
+				
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					
+					String msg = "Queue消息：Spring 集成 ActiveMQ 消息："+count;
+					TextMessage message = session.createTextMessage(msg);
+					System.out.println("发送消息："+msg);
+					return message;
+				}
+			});
+		}
 	}
 	
 	public JmsTemplate getJmsTemplate() {

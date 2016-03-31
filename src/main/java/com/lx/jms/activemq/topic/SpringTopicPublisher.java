@@ -31,7 +31,9 @@ public class SpringTopicPublisher {
 		String xmlPath = "classpath:applicationContext_jms_sender.xml";
 		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
 		SpringTopicPublisher publisher = (SpringTopicPublisher) contextUtil.getBean("publisher");
+		
 		publisher.sendMsg();
+		System.exit(-1);	//发完消息结束进程
 	}
 	
 	private JmsTemplate jmsTemplate;
@@ -40,17 +42,20 @@ public class SpringTopicPublisher {
 	 * 发送消息
 	 */
 	public void sendMsg() {
-		//方式1：
-		jmsTemplate.send(new MessageCreator() {
-			
-			@Override
-			public Message createMessage(Session session) throws JMSException {
-				String msg = "Topic消息：Spring 集成 ActiveMQ 发息";
-				TextMessage message = session.createTextMessage(msg);
-				System.out.println("发送消息："+msg);
-				return message;
-			}
-		});
+		//方式1：循环发送5条消息
+		for (int i = 0; i < 5; i++) {
+			final String count = String.valueOf(i);
+			jmsTemplate.send(new MessageCreator() {
+				
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					String msg = "Topic消息：Spring 集成 ActiveMQ 发息："+count;
+					TextMessage message = session.createTextMessage(msg);
+					System.out.println("发送消息："+msg);
+					return message;
+				}
+			});
+		}
 		
 		//方式2：对象转换器转换处理后发送
 		/*UserInfo userInfo = new UserInfo("11", 21, "lx", 10.0, 70.0f);

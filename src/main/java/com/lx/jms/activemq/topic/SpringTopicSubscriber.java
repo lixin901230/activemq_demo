@@ -39,15 +39,19 @@ public class SpringTopicSubscriber {
 	 */
 	public void receiveMsg() {
 		//方式1：
-		 try {
-			Message message = jmsTemplate.receive();	//同步接收消息
-			if (message instanceof TextMessage) {
-				TextMessage textMessage = (TextMessage) message;
-				if(message != null) {
-					System.out.println("收到消息："+textMessage.getText());
+		try {
+			while(true) { 
+				Message message = jmsTemplate.receive();	//同步接收消息
+				if (message instanceof TextMessage) {
+					TextMessage textMessage = (TextMessage) message;
+					if(message != null) {
+						System.out.println("收到消息："+textMessage.getText());
+					}
+				} else {
+					throw new Exception("消息类型解析错误");
 				}
 			}
-		} catch (JMSException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

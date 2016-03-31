@@ -11,15 +11,20 @@ import com.lx.jms.bean.UserInfo;
 public class ConsumerMessageListener {
 	
 	public void onMessage(Object baseModel) {
+		
+		System.out.println(">>>>>>>ConsumerMessageListener>>>>>>");
+		String info = "消费者消息监听器接受消息：";
 		try {
 			if(baseModel instanceof UserInfo) {
 				
 				UserInfo user = (UserInfo) baseModel;  
-			    System.out.println(user);  
+			    System.out.println(info+ user);  
 			} else if (baseModel instanceof Department) {
 				
-				Department user = (Department) baseModel;  
-				System.out.println(user.getId());  
+				Department dept = (Department) baseModel;  
+				System.out.println(info+ dept);  
+			} else {
+				System.out.println(info+ baseModel);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

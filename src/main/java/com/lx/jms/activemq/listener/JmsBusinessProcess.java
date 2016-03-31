@@ -7,10 +7,10 @@ import com.lx.jms.bean.UserInfo;
  * 处理监听到的消息
  * @author lx
  */
-public class JmsBusinessProcess implements JmsReceiveListener {
+public class JmsBusinessProcess {
 	
-	@Override
 	public void onMessage(Object baseModel) {
+		System.out.println(">>>>>>>JmsBusinessProcess>>>>>>");
 		try {
 			if(baseModel instanceof UserInfo) {
 				

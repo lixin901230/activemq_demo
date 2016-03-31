@@ -48,7 +48,7 @@ public class TopicSubscriber {
 		MessageConsumer messageConsumer = null;
 		
 		try {
-			String clientID = "client_1";
+			String clientID = "client_topic";
 			connectionFactory = new ActiveMQConnectionFactory(
 					ActiveMQConnection.DEFAULT_USER, 
 					ActiveMQConnection.DEFAULT_PASSWORD, 
@@ -69,7 +69,7 @@ public class TopicSubscriber {
 			messageConsumer = session.createDurableSubscriber((Topic) destination, clientID);
 			
 			//方式1、阻塞式接收消息
-			/*while(true) {
+			while(true) {
 				
 				//阻塞式接收消息：设置接收者接收消息的时间，为了便于测试，这里设定为10s，在这10秒内，能接收到发布者发送的topic消息
 				Message message = messageConsumer.receive(10000);
@@ -88,11 +88,11 @@ public class TopicSubscriber {
 				if(message == null) {
 					break;
 				}
-			}*/
+			}
 			
 			// 方式2、注册消息处理器，异步接收处理消息
-			messageConsumer.setMessageListener(new MsgListener());
-			Thread.sleep(60000);	//休眠10秒等待接收消息再关闭，若不休眠，测试时可以不关闭session和connection进行测试
+//			messageConsumer.setMessageListener(new MsgListener());
+//			Thread.sleep(60000);	//休眠10秒等待接收消息再关闭，若不休眠，测试时可以不关闭session和connection进行测试
 			
 		} catch (Exception e) {
 			e.printStackTrace();

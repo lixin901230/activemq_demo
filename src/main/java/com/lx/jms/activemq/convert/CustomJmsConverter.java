@@ -27,26 +27,37 @@ public class CustomJmsConverter implements MessageConverter {
 	 */
 	public Object fromMessage(Message message) throws JMSException, MessageConversionException{
 		
-		logger.info("\n============JmsConverter——》fromMessage===============\n");
-		ObjectMessage objMessage = (ObjectMessage) message;
-		String dataFlag = objMessage.getStringProperty("dataFlag");
-		if("UserInfo".equalsIgnoreCase(dataFlag)) {
-			
-			UserInfo user = new UserInfo();
-			user.setId(objMessage.getStringProperty("id"));
-			user.setName(objMessage.getStringProperty("name"));
-			System.out.println(user);
-			return user;
-		} else if("Department".equalsIgnoreCase(dataFlag)) {
-			
-			Department department = new Department();
-			department.setId(objMessage.getStringProperty("id"));
-			department.setName(objMessage.getStringProperty("name"));
-			System.out.println(department);
-			return department;
-		} else if("TextMessage".equalsIgnoreCase(dataFlag)) {
-			
-			System.out.println(objMessage.getStringProperty("textMsgName"));
+		logger.info("\n============Into CustomJmsConverter——》fromMessage===============\n");
+		
+		if(message instanceof TextMessage) {
+			TextMessage textMessage = (TextMessage) message;
+			String text = textMessage.getText();
+			logger.info("\n============Out CustomJmsConverter——》fromMessage===============\n");
+			return text;
+		} else {
+			ObjectMessage objMessage = (ObjectMessage) message;
+			String dataFlag = objMessage.getStringProperty("dataFlag");
+			if("UserInfo".equalsIgnoreCase(dataFlag)) {
+				
+				UserInfo user = new UserInfo();
+				user.setId(objMessage.getStringProperty("id"));
+				user.setName(objMessage.getStringProperty("name"));
+				logger.info("\n============Out CustomJmsConverter——》fromMessage===============\n");
+				
+				return user;
+			} else if("Department".equalsIgnoreCase(dataFlag)) {
+				
+				Department department = new Department();
+				department.setId(objMessage.getStringProperty("id"));
+				department.setName(objMessage.getStringProperty("name"));
+				logger.info("\n============Out CustomJmsConverter——》fromMessage===============\n");
+				return department;
+			} else if("TextMessage".equalsIgnoreCase(dataFlag)) {
+
+				String string = objMessage.getStringProperty("textMsgName");
+				logger.info("\n============Out CustomJmsConverter——》fromMessage===============\n");
+				return string;
+			}
 		}
 		return null;
 	}
@@ -56,7 +67,7 @@ public class CustomJmsConverter implements MessageConverter {
 	 */
 	public Message toMessage(Object obj, Session session) throws JMSException, MessageConversionException {
 		
-		logger.info("\n============JmsConverter——》toMessage===============\n");
+		logger.info("\n============CustomJmsConverter——》toMessage===============\n");
 		ObjectMessage objMsg = session.createObjectMessage();    
 		if(obj instanceof UserInfo) {
 			UserInfo user = (UserInfo)obj;
