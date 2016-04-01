@@ -1,12 +1,9 @@
 package com.lx.jms.activemq.queue;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import org.springframework.jms.core.JmsTemplate;
-
-import com.lx.jms.utils.SpringContextUtil;
 
 /**
  * 消息消费者（点对点消息模式）—— ActtiveMQ集成Spring
@@ -14,29 +11,20 @@ import com.lx.jms.utils.SpringContextUtil;
  * 	1）、发布订阅模式（publish-subscribe）
  * 	2）、点对点模式（point-to-point）
  * 	3）、（非JMS规范标准提供的模式，为使用过程中衍生出的模式）请求-应答模式（request-response）
+ * 
+ * 测试说明：
+ * 	1）、同步阻塞模式接收消息测试：{@link SpringQueueTest#testSpringQueueConsumerBlockReceiveMsg()}
+ * 	2）、监听器异步接收消息测试：{@link SpringQueueTest#testSpringQueueConsumerAsyncReceiveMsg()}
+ * 
  * @author lx
  */
 public class SpringQueueConsumer {
-	
-	/**
-	 * 测试
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		String xmlPath = "classpath:applicationContext_jms_receiver.xml";
-//		xmlPath = "classpath:applicationContext.xml";
-		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
-		
-		SpringQueueConsumer consumer = (SpringQueueConsumer) contextUtil.getBean("consumer");
-		
-		//测试阻塞式接收消息
-		consumer.receiveMsg();
-	}
 	
 	private JmsTemplate jmsTemplate;
 	
 	/**
 	 * 接收消息
+	 * 注意：同步阻塞模式接受消息 测试详见：{@link SpringQueueTest#testSpringQueueConsumerBlockReceiveMsg()}
 	 */
 	public void receiveMsg() {
 		try {
