@@ -6,6 +6,7 @@ import javax.jms.TextMessage;
 
 import org.springframework.jms.core.JmsTemplate;
 
+import com.lx.jms.activemq.queue.SpringQueueTest;
 import com.lx.jms.bean.UserInfo;
 import com.lx.jms.utils.SpringContextUtil;
 
@@ -16,26 +17,21 @@ import com.lx.jms.utils.SpringContextUtil;
  * 	1）、发布订阅模式（publish-subscribe）
  * 	2）、点对点模式（point-to-point）
  * 	3）、（非JMS规范标准提供的模式，为使用过程中衍生出的模式）请求-应答模式（request-response）
+ * 
+ * 测试说明：
+ * 	1）、同步阻塞模式接收消息测试：{@link SpringTopicTest#testSpringTopicSubscriberBlockReceiveMsg()}
+ * 	2）、监听器异步接收消息测试：{@link SpringTopicTest#testSpringTopicSubscriberAsyncReceiveMsg()}
+ * 
  * @author lx
  */
 public class SpringTopicSubscriber {
-	
-	/**
-	 * 测试
-	 * 	注意：测试时需要先启动 订阅者，再启动 发布者
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		String xmlPath = "classpath:applicationContext_jms_receiver.xml";
-		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
-		SpringTopicSubscriber subscriber = (SpringTopicSubscriber) contextUtil.getBean("subscriber");
-		subscriber.receiveMsg();
-	}
 	
 	private JmsTemplate jmsTemplate;
 	
 	/**
 	 * 接收消息
+	 * 
+	 * 注意：同步阻塞模式接受消息 测试详见：{@link SpringTopicTest#testSpringTopicSubscriberBlockReceiveMsg()}
 	 */
 	public void receiveMsg() {
 		//方式1：

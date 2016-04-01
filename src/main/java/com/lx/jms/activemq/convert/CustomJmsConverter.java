@@ -27,12 +27,12 @@ public class CustomJmsConverter implements MessageConverter {
 	 */
 	public Object fromMessage(Message message) throws JMSException, MessageConversionException{
 		
-		logger.info("\n============Into CustomJmsConverter——》fromMessage===============\n");
+		logger.info("\n============Into CustomJmsConverter——》fromMessage===============");
 		
 		if(message instanceof TextMessage) {
 			TextMessage textMessage = (TextMessage) message;
 			String text = textMessage.getText();
-			logger.info("\n============Out CustomJmsConverter——》fromMessage===============\n");
+			logger.info("\n============ CustomJmsConverter——》TextMessage===============");
 			return text;
 		} else {
 			ObjectMessage objMessage = (ObjectMessage) message;
@@ -42,7 +42,7 @@ public class CustomJmsConverter implements MessageConverter {
 				UserInfo user = new UserInfo();
 				user.setId(objMessage.getStringProperty("id"));
 				user.setName(objMessage.getStringProperty("name"));
-				logger.info("\n============Out CustomJmsConverter——》fromMessage===============\n");
+				logger.info("\n============ CustomJmsConverter——》ObjectMessage===============");
 				
 				return user;
 			} else if("Department".equalsIgnoreCase(dataFlag)) {
@@ -50,12 +50,12 @@ public class CustomJmsConverter implements MessageConverter {
 				Department department = new Department();
 				department.setId(objMessage.getStringProperty("id"));
 				department.setName(objMessage.getStringProperty("name"));
-				logger.info("\n============Out CustomJmsConverter——》fromMessage===============\n");
+				logger.info("\n============ CustomJmsConverter——》Department===============");
 				return department;
 			} else if("TextMessage".equalsIgnoreCase(dataFlag)) {
 
 				String string = objMessage.getStringProperty("textMsgName");
-				logger.info("\n============Out CustomJmsConverter——》fromMessage===============\n");
+				logger.info("\n============ CustomJmsConverter——》TextMessage===============");
 				return string;
 			}
 		}

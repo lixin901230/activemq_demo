@@ -8,6 +8,7 @@ import javax.jms.TextMessage;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
+import com.lx.jms.activemq.queue.SpringQueueTest;
 import com.lx.jms.bean.UserInfo;
 import com.lx.jms.utils.SpringContextUtil;
 
@@ -18,28 +19,19 @@ import com.lx.jms.utils.SpringContextUtil;
  * 	1）、发布订阅模式（publish-subscribe）
  * 	2）、点对点模式（point-to-point）
  * 	3）、（非JMS规范标准提供的模式，为使用过程中衍生出的模式）请求-应答模式（request-response）
+ * 
+ * 测试说明：
+ * 	发送消息测试：{@link SpringTopicTest#testSpringTopicPublisher()}
+ * 
  * @author lx
  */
 public class SpringTopicPublisher {
-	
-	/**
-	 * 测试
-	 * 	注意：测试时需要先启动 订阅者，再启动 发布者
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		String xmlPath = "classpath:applicationContext_jms_sender.xml";
-		SpringContextUtil contextUtil = SpringContextUtil.getInstance(xmlPath);
-		SpringTopicPublisher publisher = (SpringTopicPublisher) contextUtil.getBean("publisher");
-		
-		publisher.sendMsg();
-		System.exit(-1);	//发完消息结束进程
-	}
 	
 	private JmsTemplate jmsTemplate;
 	
 	/**
 	 * 发送消息
+	 * 	注意：发送消息 测试详见：{@link SpringTopicTest#testSpringTopicPublisher()}
 	 */
 	public void sendMsg() {
 		//方式1：循环发送5条消息

@@ -32,7 +32,7 @@
 	<bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="jmsSenderFactory"/>
 		<!-- 设置defaultDestinationName与设置defaultDestination二选一，只设置defaultDestinationName，则Spring会根据设置的该目标名称创建一个destination
-		<property name="defaultDestinationName" ref="lx.spring.topic"/> -->
+		<property name="defaultDestinationName" ref="lx.spring.queue"/> -->
 		<property name="defaultDestination" ref="destinationQueue"/>
 		<property name="deliveryMode" value="2"/>				<!-- 1：不持久化；2：持久化（默认） -->
 		<property name="pubSubDomain" value="false"/>			<!-- pubSubDomain区别消息模式，false：点对点模式，true：订阅-发布模式 -->
