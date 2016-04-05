@@ -49,7 +49,7 @@
     
     <!-- 消息处理 -->
     <bean id="delegate" class="com.lx.jms.activemq.listener.ConsumerListener"></bean>
-    
+	    
 	<!-- 消息转换器 -->
     <bean id="jmsConverter" class="com.lx.jms.activemq.convert.CustomJmsConverter"></bean>
 	<!-- spring 内置默认的消息转换器，在未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器；

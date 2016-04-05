@@ -61,9 +61,10 @@ public class SpringQueueTest extends TestCase {
 			consumer.receiveMsg();	//同步阻塞式接收消息
 			
 			Thread.sleep(5 * 60 * 1000);	//便于测试接收消息，此处等待5分钟
-			
-		} catch (InterruptedException e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 }

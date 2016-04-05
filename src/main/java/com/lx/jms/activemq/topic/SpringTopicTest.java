@@ -46,7 +46,7 @@ public class SpringTopicTest extends TestCase {
 			
 			Thread.sleep(5 * 60 * 1000);	//便于测试接收消息，此处等待5分钟
 			
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -65,8 +65,10 @@ public class SpringTopicTest extends TestCase {
 			subscriber.receiveMsg();
 			
 			Thread.sleep(5 * 60 * 1000);	//便于测试接收消息，此处等待5分钟
-		} catch (InterruptedException e) {
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 }
