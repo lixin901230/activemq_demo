@@ -1,5 +1,6 @@
 package com.lx.jms.activemq.queue;
 
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -23,6 +24,7 @@ import org.springframework.jms.core.MessageCreator;
 public class SpringQueueProducer {
 	
 	private JmsTemplate jmsTemplate;
+	private Destination destinationQueue;	//队列名称，给指定队列发送消息时使用
 	
 	/**
 	 * 发送消息
@@ -36,8 +38,8 @@ public class SpringQueueProducer {
 		for (int i = 0; i < 5; i++) {
 			
 			final String count = String.valueOf(i);
+			//给默认队列发送消息
 			jmsTemplate.send(new MessageCreator() {
-				
 				@Override
 				public Message createMessage(Session session) throws JMSException {
 					
@@ -47,6 +49,18 @@ public class SpringQueueProducer {
 					return message;
 				}
 			});
+			
+			//给指定的队列发送消息
+			/*jmsTemplate.send(destinationQueue, new MessageCreator() {
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					
+					String msg = "Queue消息：Spring 集成 ActiveMQ 消息："+count;
+					TextMessage message = session.createTextMessage(msg);
+					System.out.println("发送消息："+msg);
+					return message;
+				}
+			});*/
 		}
 	}
 	
@@ -55,5 +69,11 @@ public class SpringQueueProducer {
 	}
 	public void setJmsTemplate(JmsTemplate jmsTemplate) {
 		this.jmsTemplate = jmsTemplate;
+	}
+	public Destination getDestinationQueue() {
+		return destinationQueue;
+	}
+	public void setDestinationQueue(Destination destinationQueue) {
+		this.destinationQueue = destinationQueue;
 	}
 }

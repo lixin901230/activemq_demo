@@ -79,9 +79,41 @@
 	        </persistenceAdapter>
 		
 			（3）配置完毕 ，启动activemq服务，会发现刚新建的数据库中多了三张表，分别是：
-				1）activemq_acks：ActiveMQ的签收信息；
-				2）activemq_lock：ActiveMQ的锁信息；
-				3）activemq_msgs：ActiveMQ的消息的信息
+				ACTIVEMQ_ACKS：持久订阅者列表
+				EMQ_LOCK：进行数据访问的排斥锁
+				ACTIVEMQ_MSGS：持久化消息表（存储Queue和Topic消息的表） 
+			
+				<一>表说明：
+				当在启动ActiveMQ时,先判断表是否存在,如果不存在,将去创建表,如下: 
+				(1)、ACTIVEMQ_ACKS：持久订阅者列表 
+					1.CONTAINER：类型：//主题 （如：topic://basicInfo.topic） 
+					2.SUB_DEST：应该是描述,与1内容相同 
+					3.CLIENT_ID：持久订阅者的标志ID,必须唯一 
+					4.SUB_NAME：持久订阅者的名称.(durableSubscriptionName) 
+					5.SELECTOR：消息选择器,consumer可以选择自己想要的 
+					6.LAST_ACKED_ID：最后一次确认ID,这个字段存的该该订阅者最后一次收到的消息的ID 
+				
+				(2)、ACTIVEMQ_LOCK：进行数据访问的排斥锁 
+					1.ID：值为1 
+					2.TIME：时间 
+					3.BROKER_NAME：broker的名称 
+					   这个表似为集群使用,但现在ActiveMQ并不能共享数据库. 
+				
+				(3)、ACTIVEMQ_MSGS：持久化消息表（存储Queue和Topic消息的表） 
+					1.ID：消息的ID 
+					2.CONTAINER： 类型：//主题 （如：queue://my.queue、Topic://basicInfo.topic ） 
+					3.MSGID_PROD：发送消息者的标志 
+					MSGID_PROD =ID:[computerName][…..] 
+					注意computerName,不要使用中文,消息对象中会存储这个部分,解析connectID时会出现Bad String错误. 
+					4.MSGID_SEQ：还不知用处 
+					5.EXPIRATION：到期时间. 
+					6.MSG：消息本身,Blob类型. 
+					可以在JmsTemplate发送配置中,加上<property name=”timeToLive” value=”432000000”/>,5天的生命期,如果消息一直没有被处理,消息会被删除,但是表中会存在CONTAINER为queue://ActiveMQ.DLQ的记录.也就是说,相当于将过期的消息发给了一个ActiveMQ自定义的删除队列.. 
+				
+				<二>关于ActiveMQ的持久订阅消息删除操作 
+					1.主题消息只有一条,所有订阅了这个消息的持久订阅者都要收到消息,只有所有订阅者收到消息并确认(Acknowledge)之后.才会删除. 
+					说明：ActiveMQ支持批量(optimizeAcknowledge为true)确认,以提高性能 
+					2.ActiveMQ执行删除Topic消息的cleanup()操作的时间间隔为5 minutes..
 			
 			（4）运行代码demo示例测试
 			

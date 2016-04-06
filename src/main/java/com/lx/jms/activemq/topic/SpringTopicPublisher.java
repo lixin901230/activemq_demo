@@ -1,5 +1,6 @@
 package com.lx.jms.activemq.topic;
 
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -28,6 +29,7 @@ import com.lx.jms.utils.SpringContextUtil;
 public class SpringTopicPublisher {
 	
 	private JmsTemplate jmsTemplate;
+	private Destination destinationTopic;	//队列名称，给指定队列发送消息时使用
 	
 	/**
 	 * 发送消息
@@ -37,8 +39,8 @@ public class SpringTopicPublisher {
 		//方式1：循环发送5条消息
 		for (int i = 0; i < 5; i++) {
 			final String count = String.valueOf(i);
+			//给默认队列发送消息
 			jmsTemplate.send(new MessageCreator() {
-				
 				@Override
 				public Message createMessage(Session session) throws JMSException {
 					String msg = "Topic消息：Spring 集成 ActiveMQ 发息："+count;
@@ -47,6 +49,17 @@ public class SpringTopicPublisher {
 					return message;
 				}
 			});
+			
+			//给指定队列发送消息
+			/*jmsTemplate.send(destinationTopic, new MessageCreator() {
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					String msg = "Topic消息：Spring 集成 ActiveMQ 发息："+count;
+					TextMessage message = session.createTextMessage(msg);
+					System.out.println("发送消息："+msg);
+					return message;
+				}
+			});*/
 		}
 		
 		//方式2：对象转换器转换处理后发送
@@ -59,5 +72,11 @@ public class SpringTopicPublisher {
 	}
 	public void setJmsTemplate(JmsTemplate jmsTemplate) {
 		this.jmsTemplate = jmsTemplate;
+	}
+	public Destination getDestinationTopic() {
+		return destinationTopic;
+	}
+	public void setDestinationTopic(Destination destinationTopic) {
+		this.destinationTopic = destinationTopic;
 	}
 }
