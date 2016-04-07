@@ -1,7 +1,5 @@
 package com.lx.jms.activemq.listener;
 
-import org.apache.log4j.Logger;
-
 import com.lx.jms.bean.Department;
 import com.lx.jms.bean.UserInfo;
 
@@ -14,7 +12,7 @@ public class ConsumerListener {
 	
 	public void handleMessage(Object baseModel) {
 		
-		System.out.println(">>>>>>>ConsumerMessageListener>>>>>>");
+		System.out.println(">>>>>>>MessageListenerAdapter————>ConsumerListener>>>>>>");
 		String info = "消费者消息监听器接收消息：";
 		try {
 			if(baseModel instanceof UserInfo) {
