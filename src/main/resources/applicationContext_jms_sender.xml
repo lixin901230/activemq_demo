@@ -11,14 +11,18 @@
 	<bean id="jmsSenderFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
 		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL" value="tcp://localhost:61616"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
+				<!-- <property name="brokerURL" value="tcp://127.0.0.1:61616"/> -->
+				<property name="brokerURL" value="failover:(tcp://127.0.0.1:61616)"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
 				<property name="useAsyncSend" value="true"/>				<!-- 异步发送 -->
 				<property name="clientIDPrefix" value="client_spring_"/>	<!-- 持久化订阅需要指定clientIDPrefix； clientIDPrefix：指定了consumer的clientID的前缀，符合此前缀规则的consumer将成为该TOPIC的持久订阅者。 -->
+				<property name="transportListener" ref="myTransportListener"/><!-- 使用TransportListener 监控连接状态 -->
 			</bean>
 		</property>
 		<property name="maxConnections" value="100"/>
 	</bean>
 	
+	<!-- 使用TransportListener 监控连接状态 -->
+	<bean id="myTransportListener" class="com.lx.jms.activemq.listener.ClientTransportListener"></bean>
 	
 	<!-- #####################	点对点模式消息	##################### -->
 	

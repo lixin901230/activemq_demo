@@ -45,13 +45,26 @@
 	
     <!--
         The <broker> element is used to configure the ActiveMQ broker.
+	
+		默认情况（针对持久化消息的情况）：
+			Queue点对点消息：持久化到库中的消息被消费者消费后会被删除，未被消费者消费的消息会一直存储在库中，直到重启activemq服务后才会被删除；
+			Topic消息：在持久化发布后，不管是否被订阅者消费，消息都不会被删除，直到重启activemq服务后才会自动删除；
+		
+		配置定时清理消息：
+			定时自动清理无效的Topic和Queue需要设置三个属性：
+			1、schedulePeriodForDestinationPurge：执行清理任务的周期，每十秒检查一次，默认为0，此功能关闭
+			2、gcInactiveDestinations="true"：启用清理功能，删除掉不活动队列，默认为false
+			3、inactiveTimoutBeforeGC="10000"：Topic或Queue 消息队列超时时间，不活动的队列10秒后删除，默认为60秒
+			在规定的时间内，无有效订阅，没有入队记录，超时后就会被清理
     -->
-    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" dataDirectory="${activemq.data}">
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" dataDirectory="${activemq.data}" 
+		schedulePeriodForDestinationPurge="10000">
 
         <destinationPolicy>
             <policyMap>
               <policyEntries>
-                <policyEntry topic=">" >
+                <!-- <policyEntry topic=">" > -->
+				<policyEntry queue=">" gcInactiveDestinations="true" inactiveTimoutBeforeGC="10000">
                     <!-- The constantPendingMessageLimitStrategy is used to prevent
                          slow topic consumers to block producers and affect other consumers
                          by limiting the number of messages that are retained

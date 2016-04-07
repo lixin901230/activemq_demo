@@ -11,41 +11,68 @@
 	<bean id="jmsReceiverFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
 		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL" value="tcp://localhost:61616"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
+				<!-- <property name="brokerURL" value="tcp://127.0.0.1:61616"/> -->
+				<property name="brokerURL" value="failover:(tcp://127.0.0.1:61616)"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
+				<!-- 失效转移连接方式配置 
+				<property name="brokerURL" value="failover:(tcp://${activemq.ip}:${activemq.port}?wireFormat.maxInactivityDuration=0)?initialReconnectDelay=100&amp;maxReconnectAttempts=0"></property> -->
 				<property name="useAsyncSend" value="true"/>				<!-- 异步发送 -->
+				<property name="transportListener" ref="myTransportListener"/><!-- 使用TransportListener 监控连接状态 -->
 			</bean>
 		</property>
 		<property name="maxConnections" value="100"/>
 	</bean>
 	
+	<!-- 使用TransportListener 监控连接状态 -->
+	<bean id="myTransportListener" class="com.lx.jms.activemq.listener.ClientTransportListener"></bean>
+	
 	
 	<!-- #####################	订阅-发布模式消息	（topic）		##################### -->
 	
-	<!-- 方式2：（推荐使用监听异步处理消息）异步式处理消息，自己通过注入自定义的消息处理监听器来异步消费处理消息 -->
+	<!-- 消息监听适配器对应的监听容器 -->
 	<bean id="receiveTopicMsg" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 	  	<property name="connectionFactory" ref="jmsReceiverFactory"></property>
 	  	<property name="sessionAcknowledgeMode" value="1"></property>
-	  	<property name="pubSubDomain" value="true"></property>
-	  	<property name="subscriptionDurable" value="true"></property>
-	  	<property name="destinationName" value="lx.spring.topic"></property>
+	  	<property name="pubSubDomain" value="true"></property>	<!-- 消息模式：true：订阅-发布模式；false：点对点模式 -->
+	  	<property name="subscriptionDurable" value="true"></property>	<!-- 是否持久化订阅开关：true：持久化；false：不持久化 -->
+	  	<!-- 可通过直接指定队列名称有spring 队列目的地解析器动态生成队列目的地 -->
+	  	<!-- <property name="destinationName" value="lx.spring.topic"></property> -->
+	  	<property name="destination" ref="topicDestination"></property>
+	  	
+	  	<!-- 监听方式1：使用MessageListener作为消息监听器  -->
+	  	<!-- <property name="messageListener" ref="messageListener"></property> -->
+	  	<!-- 监听方式2：使用ConsumerSessionAwareMessageListener作为消息监听器 -->
+	  	<!-- <property name="messageListener" ref="sessionAwareMessageListener"></property> -->
+	  	<!-- 监听方式3（推荐）：使用MessageListenerAdapter作为消息监听器 -->
 	  	<property name="messageListener" ref="messageListenerAdapter"></property>
-	  	<property name="clientId" value="client_spring_topic"></property>
-	  	<property name="durableSubscriptionName" value="client_spring_topic_listener_receive"></property>
+	  	<property name="clientId" value="client_spring_topic"></property>	<!-- 持久订阅者的标志ID,必须唯一 -->
+	  	<property name="durableSubscriptionName" value="client_spring_topic_listener_receive"></property>	<!-- 持久订阅者的名称 -->
 	</bean>
 	
+	<!--这个是队列目的地，订阅-发布模式（一对多）-->
+	<bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg index="0" value="lx.spring.topic"/>
+	</bean>
 	
-	<!-- #####################	公共部分（自定义消息转换器、自定义异步接收处理消息监听器）	##################### -->
+	<!-- 监听方式1：使用MessageListener作为消息监听器 -->  
+    <bean id="messageListener" class="com.lx.jms.activemq.listener.ConsumerMessageListener"/>
 	
-	<!-- 异步接受消息————消息监听器 -->
+	<!-- 监听方式2：使用可以获取session的SessionAwareMessageListener作为监听器 -->
+	<bean id="sessionAwareMessageListener" class="com.lx.jms.activemq.listener.ConsumerSessionAwareMessageListener">  
+		<property name="destination" ref="topicDestination"/>
+	</bean>
+	
+	<!-- 监听方式3（推荐）：使用MessageListenerAdapter作为消息监听器 -->
 	<bean id="messageListenerAdapter" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">  
-        <property name="delegate" ref="delegate"></property>
+        <property name="delegate">	<!-- 通过指定一个自定义的普通的类进行消息处理 -->
+        	<bean class="com.lx.jms.activemq.listener.ConsumerListener"></bean>
+        </property>
         <property name="defaultListenerMethod" value="handleMessage"></property>
         <property name="messageConverter" ref="jmsConverter"></property>
     </bean>
-    
-    <!-- 消息处理 -->
-    <bean id="delegate" class="com.lx.jms.activemq.listener.ConsumerListener"></bean>
-	    
+	
+	
+	<!-- #####################	（自定义消息转换器）	##################### -->
+	
 	<!-- 消息转换器 -->
     <bean id="jmsConverter" class="com.lx.jms.activemq.convert.CustomJmsConverter"></bean>
 	<!-- spring 内置默认的消息转换器，在未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器；

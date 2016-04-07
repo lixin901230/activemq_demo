@@ -11,18 +11,21 @@
 	<bean id="jmsReceiverFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
 		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL" value="tcp://localhost:61616"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
+				<property name="brokerURL" value="failover:(tcp://127.0.0.1:61616)"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
 				<property name="useAsyncSend" value="true"/>				<!-- 异步发送 -->
+				<property name="transportListener" ref="myTransportListener"/><!-- 使用TransportListener 监控连接状态 -->
 			</bean>
 		</property>
 		<property name="maxConnections" value="100"/>
 	</bean>
 	
+	<!-- 使用TransportListener 监控连接状态 -->
+	<bean id="myTransportListener" class="com.lx.jms.activemq.listener.ClientTransportListener"></bean>
+	
 	
 	<!-- #####################	订阅-发布模式消息（topic）	##################### -->
 	
-	<!-- 订阅-发布模式消息（topic） -->
-	<!-- 方式1：阻塞式处理消息，自己通过jmsTemplate提供的接口同步接收处理消息 -->
+	<!-- 阻塞式接收处理消息，自己通过jmsTemplate提供的接口同步接收处理消息 -->
 	
 	<!-- 构造一个名称为lx.spring.topic的topic消息目的地队列，此步也可在jmsTemplate中通过设置defaultDestinationName取代 -->
 	<bean id="destinationTopic" class="org.apache.activemq.command.ActiveMQTopic">
@@ -38,9 +41,11 @@
 		<property name="messageConverter" ref="jmsConverter"/>		<!-- 未在jmsTemplate中注册自定义的messageConverter时，jmsTemplate内置默认使用SimpleMessageConverter作为消息转换器； -->
 	</bean>
 	
+	<!-- 消息订阅者 -->
 	<bean id="subscriber" class="com.lx.jms.activemq.topic.SpringTopicSubscriber">
 		<property name="jmsTemplate" ref="topicJmsTemplate"/>
 	</bean>
+	
 	
 	<!-- #####################	公共部分（自定义消息转换器、自定义异步接收处理消息监听器）	##################### -->
     

@@ -1,19 +1,18 @@
 package com.lx.jms.activemq.topic;
 
-import java.util.Date;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+
+import com.lx.jms.activemq.listener.ClientTransportListener;
 
 
 /**
@@ -55,6 +54,9 @@ public class TopicPublisher {
 					brokerURL);
 			
 			connection = connectionFactory.createConnection();
+			
+			//((ActiveMQConnection) connection).addTransportListener(new ClientTransportListener());	//使用TransportListener 监控连接状态 
+			
 			connection.start();
 			
 			session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);

@@ -9,6 +9,8 @@ import javax.jms.TextMessage;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
+import com.lx.jms.bean.UserInfo;
+
 /**
  * 消息生产者（点对点消息模式）—— ActtiveMQ集成Spring
  * 消息队列消息模式：
@@ -34,12 +36,15 @@ public class SpringQueueProducer {
 	 */
 	public void sendMsg() {
 		
-		//循环发送5条消息
+		// 循环发送5条消息
 		for (int i = 0; i < 5; i++) {
 			
 			final String count = String.valueOf(i);
-			//给默认队列发送消息
-			jmsTemplate.send(new MessageCreator() {
+			
+			// 方式1：未使用MessageConverter的情况
+
+			// 1）给默认队列发送消息
+			/*jmsTemplate.send(new MessageCreator() {
 				@Override
 				public Message createMessage(Session session) throws JMSException {
 					
@@ -48,9 +53,9 @@ public class SpringQueueProducer {
 					System.out.println("发送消息："+msg);
 					return message;
 				}
-			});
+			});*/
 			
-			//给指定的队列发送消息
+			// 2）给指定队列发送消息
 			/*jmsTemplate.send(destinationQueue, new MessageCreator() {
 				@Override
 				public Message createMessage(Session session) throws JMSException {
@@ -61,6 +66,11 @@ public class SpringQueueProducer {
 					return message;
 				}
 			});*/
+			
+			
+			// 方式2：使用MessageConverter对象转换器转换处理后发送
+			UserInfo userInfo = new UserInfo("Queue消息：Spring 集成 ActiveMQ 消息："+count, 21, "lx", 10.0, 70.0f);
+			jmsTemplate.convertAndSend(destinationQueue, userInfo);
 		}
 	}
 	

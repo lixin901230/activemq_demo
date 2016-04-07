@@ -22,7 +22,41 @@ public class CustomJmsConverter implements MessageConverter {
 
 	private Logger logger = Logger.getLogger(getClass());
 	
-	/* (non-Javadoc)
+	/* 
+	 * 发送消息前，对消息进行转换
+	 * (non-Javadoc)
+	 * @see org.springframework.jms.support.converter.MessageConverter#toMessage(java.lang.Object, javax.jms.Session)
+	 */
+	public Message toMessage(Object obj, Session session) throws JMSException, MessageConversionException {
+		
+		logger.info("\n============CustomJmsConverter——》toMessage===============\n");
+		ObjectMessage objMsg = session.createObjectMessage();    
+		if(obj instanceof UserInfo) {
+			UserInfo user = (UserInfo)obj;
+			objMsg.setStringProperty("dataFlag", "UserInfo");
+			objMsg.setStringProperty("id", user.getId());
+			objMsg.setStringProperty("name", user.getName());
+			
+		} else if(obj instanceof Department) {
+			Department dept = (Department) obj;
+			objMsg.setStringProperty("dataFlag", "Department");
+			objMsg.setStringProperty("id", dept.getId());
+			objMsg.setStringProperty("name", dept.getName());
+		} else if(obj instanceof String) {
+			TextMessage textMessage = new ActiveMQTextMessage();
+			objMsg.setStringProperty("dataFlag", "TextMessage");
+			textMessage.setStringProperty("textMsgName", "消息转换器处理————》这是一个文本消息");
+			return textMessage;
+		} else {
+			throw new MessageConversionException("消息发送失败，消息转换错误，不在该消息类型的转换器，类型："+objMsg.getClass().getName());
+		}
+		System.out.println("消息发送成功："+objMsg.toString());
+        return objMsg;
+	}
+	
+	/* 
+	 * 接收消息前，对消息进行转换
+	 * (non-Javadoc)
 	 * @see org.springframework.jms.support.converter.MessageConverter#fromMessage(javax.jms.Message)
 	 */
 	public Object fromMessage(Message message) throws JMSException, MessageConversionException{
@@ -57,36 +91,11 @@ public class CustomJmsConverter implements MessageConverter {
 				String string = objMessage.getStringProperty("textMsgName");
 				logger.info("\n============ CustomJmsConverter——》TextMessage===============");
 				return string;
+			} else {
+				
+				throw new MessageConversionException("消息转换类型不存在，消息类型为："+objMessage.getClass().getName());
 			}
 		}
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.jms.support.converter.MessageConverter#toMessage(java.lang.Object, javax.jms.Session)
-	 */
-	public Message toMessage(Object obj, Session session) throws JMSException, MessageConversionException {
-		
-		logger.info("\n============CustomJmsConverter——》toMessage===============\n");
-		ObjectMessage objMsg = session.createObjectMessage();    
-		if(obj instanceof UserInfo) {
-			UserInfo user = (UserInfo)obj;
-			objMsg.setStringProperty("dataFlag", "UserInfo");
-			objMsg.setStringProperty("id", user.getId());
-			objMsg.setStringProperty("name", user.getName());
-			
-		} else if(obj instanceof Department) {
-			Department dept = (Department) obj;
-			objMsg.setStringProperty("dataFlag", "Department");
-			objMsg.setStringProperty("id", dept.getId());
-			objMsg.setStringProperty("name", dept.getName());
-		} else if(obj instanceof String) {
-			TextMessage textMessage = new ActiveMQTextMessage();
-			objMsg.setStringProperty("dataFlag", "TextMessage");
-			textMessage.setStringProperty("textMsgName", "消息转换器处理————》这是一个文本消息");
-			return textMessage;
-		}
-        return objMsg;  
 	}
 
 }

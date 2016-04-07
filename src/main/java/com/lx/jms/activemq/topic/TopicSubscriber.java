@@ -4,7 +4,6 @@ import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
@@ -14,7 +13,7 @@ import javax.jms.Topic;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.lx.jms.activemq.listener.MsgListener;
+import com.lx.jms.activemq.listener.ClientTransportListener;
 
 /**
  * 消息订阅者（订阅-发布模式）
@@ -56,6 +55,9 @@ public class TopicSubscriber {
 			
 			connection = connectionFactory.createConnection();
 			connection.setClientID(clientID);	//持久订阅需要设置clientID
+			
+			//((ActiveMQConnection) connection).addTransportListener(new ClientTransportListener());	//使用TransportListener 监控连接状态 
+			
 			connection.start();
 			
 			//获取操作连接,默认自动向服务器发送接收成功的响应

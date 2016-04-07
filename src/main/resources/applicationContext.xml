@@ -30,12 +30,6 @@
         </property>  
     </bean> -->
 	
-
 	<!-- Spring bean 获取工具类注入 -->
 	<bean id="WebApplicationContext" class="com.lx.jms.utils.ApplicationContextHelper"></bean>  
-	
-	<import resource="applicationContext-bean.xml"/>
-	
-	<import resource="applicationContext_jms.xml"/>
-	
 </beans>

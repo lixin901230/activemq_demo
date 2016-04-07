@@ -1,14 +1,12 @@
 package com.lx.jms.activemq.topic;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import org.springframework.jms.core.JmsTemplate;
 
-import com.lx.jms.activemq.queue.SpringQueueTest;
+import com.lx.jms.bean.Department;
 import com.lx.jms.bean.UserInfo;
-import com.lx.jms.utils.SpringContextUtil;
 
 /**
  * 消息订阅者（订阅-发布模式） —— ActtiveMQ集成Spring
@@ -37,7 +35,8 @@ public class SpringTopicSubscriber {
 		//方式1：
 		try {
 			while(true) { 
-				Message message = jmsTemplate.receive();	//同步接收消息
+				// 方式1：接收消息时，未使用转换器对消息进行转换
+				/*Message message = jmsTemplate.receive();	//同步接收消息
 				if (message instanceof TextMessage) {
 					TextMessage textMessage = (TextMessage) message;
 					if(message != null) {
@@ -45,21 +44,27 @@ public class SpringTopicSubscriber {
 					}
 				} else {
 					throw new Exception("消息类型解析错误");
+				}*/
+				
+				// 方式2：接收消息时，使用自定义转换器对象消息进行转换
+				Object obj = jmsTemplate.receiveAndConvert();
+				if(obj instanceof UserInfo) {
+					
+					UserInfo user = (UserInfo) obj;
+					System.out.println("收到消息："+ user);
+				} else if(obj instanceof Department) {
+					
+					Department dept = (Department) obj;
+					System.out.println("收到消息："+ dept);
+				} else {
+					throw new Exception("消息类型解析错误；消息类型："+obj.getClass().getName());
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		//方式2：对象转换器转啊混处理后接受
-		/*Object object = jmsTemplate.receiveAndConvert();
-		if(object instanceof UserInfo) {
-			UserInfo userInfo = (UserInfo) object;
-			System.out.println(userInfo);
-		} else {
-			String className = object.getClass().getName();
-			System.out.println(className);
-		}*/
+		
 	}
 	
 	public JmsTemplate getJmsTemplate() {

@@ -51,6 +51,9 @@ public class QueueConsumer {
 			
 			// 从连接工厂中构造连接对象
 			connection = connectionFactory.createConnection();
+			
+			//((ActiveMQConnection) connection).addTransportListener(new ClientTransportListener());	//使用TransportListener 监控连接状态
+			
 			// 启动
 			connection.start();
 			

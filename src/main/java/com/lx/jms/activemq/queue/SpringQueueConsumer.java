@@ -5,6 +5,9 @@ import javax.jms.TextMessage;
 
 import org.springframework.jms.core.JmsTemplate;
 
+import com.lx.jms.bean.Department;
+import com.lx.jms.bean.UserInfo;
+
 /**
  * 消息消费者（点对点消息模式）—— ActtiveMQ集成Spring
  * 消息队列消息模式：
@@ -29,7 +32,9 @@ public class SpringQueueConsumer {
 	public void receiveMsg() {
 		try {
 			while(true) {
-				Message message = jmsTemplate.receive();	//阻塞接收消息（在接收到消息之前，在设置的连接超时时间内，一直处于阻塞状态）
+				
+				//方式1：接收消息时，未使用转换器对消息进行转换
+				/*Message message = jmsTemplate.receive();	//阻塞接收消息（在接收到消息之前，在设置的连接超时时间内，一直处于阻塞状态）
 				if (message instanceof TextMessage) {
 					TextMessage textMessage = (TextMessage) message;
 					if(message != null) {
@@ -37,8 +42,21 @@ public class SpringQueueConsumer {
 					}
 				} else {
 					throw new Exception("消息类型解析错误");
+				}*/
+				
+				//方式2：接收消息时，使用自定义转换器对象消息进转换
+				Object obj = jmsTemplate.receiveAndConvert();
+				if(obj instanceof UserInfo) {
+					UserInfo user = (UserInfo) obj;
+					System.out.println("收到消息："+ user);
+				} else if(obj instanceof Department) {
+					Department dept = (Department) obj;
+					System.out.println("收到消息："+ dept);
+				} else {
+					throw new Exception("消息类型解析错误；消息类型："+obj.getClass().getName());
 				}
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
