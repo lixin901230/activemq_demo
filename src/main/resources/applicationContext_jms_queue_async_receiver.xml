@@ -32,10 +32,10 @@
 	  	<property name="pubSubDomain" value="false"></property>
 	  	<property name="subscriptionDurable" value="true"></property>
 	  	<property name="destination" ref="queueDestination"></property>
-	  	<!-- 监听方式1：messageListener监听 
-	  	<property name="messageListener" ref="messageListener"></property> -->
-	  	<!-- 监听方式2：sessionAwareMessageListener监听 
-	  	<property name="messageListener" ref="sessionAwareMessageListener"></property> -->
+	  	<!-- 监听方式1：messageListener监听  -->
+	  	<!-- <property name="messageListener" ref="messageListener"></property> -->
+	  	<!-- 监听方式2：sessionAwareMessageListener监听  -->
+	  	<!-- <property name="messageListener" ref="sessionAwareMessageListener"></property> -->
 	  	<!-- 监听方式3（推荐）：messageListenerAdapter监听 -->
 	  	<property name="messageListener" ref="messageListenerAdapter"></property>
 	  	<property name="clientId" value="client_spring_queue"></property>
