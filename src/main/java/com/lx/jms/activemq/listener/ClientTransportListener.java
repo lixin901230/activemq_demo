@@ -4,6 +4,12 @@ import java.io.IOException;
 
 import org.apache.activemq.transport.TransportListener;
 
+/**
+ * activemq服务连接监听器
+ * 
+ * @author lx
+ *
+ */
 public class ClientTransportListener implements TransportListener {
 
 	/* 

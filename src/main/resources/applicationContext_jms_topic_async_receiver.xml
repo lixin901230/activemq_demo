@@ -12,7 +12,7 @@
 		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
 				<!-- <property name="brokerURL" value="tcp://127.0.0.1:61616"/> -->
-				<property name="brokerURL" value="failover:(tcp://127.0.0.1:61616)"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
+				<property name="brokerURL" value="failover:(tcp://127.0.0.1:61616,tcp://127.0.0.1:62626)"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
 				<!-- 失效转移连接方式配置 
 				<property name="brokerURL" value="failover:(tcp://${activemq.ip}:${activemq.port}?wireFormat.maxInactivityDuration=0)?initialReconnectDelay=100&amp;maxReconnectAttempts=0"></property> -->
 				<property name="useAsyncSend" value="true"/>				<!-- 异步发送 -->

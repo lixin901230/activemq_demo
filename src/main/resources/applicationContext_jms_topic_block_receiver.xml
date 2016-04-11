@@ -11,7 +11,7 @@
 	<bean id="jmsReceiverFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
 		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL" value="failover:(tcp://127.0.0.1:61616)"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
+				<property name="brokerURL" value="failover:(tcp://127.0.0.1:61616,tcp://127.0.0.1:62626)"/>	<!-- 连接服务的用户名密码使用默认密码，可通过设置userName和password属性设置 -->
 				<property name="useAsyncSend" value="true"/>				<!-- 异步发送 -->
 				<property name="transportListener" ref="myTransportListener"/><!-- 使用TransportListener 监控连接状态 -->
 			</bean>
