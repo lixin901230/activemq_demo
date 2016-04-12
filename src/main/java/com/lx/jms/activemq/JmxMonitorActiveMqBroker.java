@@ -21,9 +21,11 @@ import org.apache.activemq.broker.jmx.BrokerViewMBean;
  * 
  * 我们知道ActiveMQ broker的管理接口是通过JMX方式提供的。
  *	一个简单的访问方式就是通过jconsole，输入service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi
- *	需要注意的是：
+ *	注意：
+ *		使用JMX连接监控activemq时，需要修改activemq.xml相应配置：
  *		1、默认JMX功能是没有打开的，需要在activemq.xml的broker配置上添加useJmx="true"
  *		2、需要在managementContext里，修改为createConnector="true"，（同时这里也可以修改jmx的端口和domain）
+ * 		3、在managementContext里加入属性jmxDomainName="org.apache.activemq"（未配置时，默认即为此值）
  * 
  * @author lx
  *
@@ -56,6 +58,7 @@ public class JmxMonitorActiveMqBroker {
 			
 			System.out.println("\n\norg.apache.activemq:brokerName=localhost,type=Broker：---------------");
 			
+			//org.apache.activemq为activemq.xml中managementContext配置中jmxDomainName的属性值；即：jmxDomainName="org.apache.activemq"
 			ObjectName objectName = new ObjectName("org.apache.activemq:brokerName=localhost,type=Broker");
 			
 			System.out.println("\nBrokerName：---------------");
@@ -87,3 +90,4 @@ public class JmxMonitorActiveMqBroker {
 		}
 	}
 }
+
