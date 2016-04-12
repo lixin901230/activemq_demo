@@ -73,9 +73,10 @@
 			<!-- 消息持久化适配器 
 				方式1：MySql 数据库存储持久化；
 					属性dataSource指定持久化数据库数据源的bean配置，createTablesOnStartup是否在启动的时候创建数据表，
-					默认值是true，这样每次启动都会去创建数据表了，一般是第一次启动的时候设置为true，之后改成false。  -->
+					默认值是true，这样每次启动都会去创建数据表了，一般是第一次启动的时候设置为true，之后改成false。
+					属性useDatabaseLock：设置activemq启动时不锁数据库（在启动多个activemq服务并共用同一个数据库进行消息持久化时需要加该属性）  -->
 			<persistenceAdapter>
-				<jdbcPersistenceAdapter dataSource="#mysql-ds" createTablesOnStartup="false" />
+				<jdbcPersistenceAdapter dataSource="#mysql-ds" createTablesOnStartup="true" useDatabaseLock="false"/>
 	        </persistenceAdapter>
 		
 			（3）配置完毕 ，启动activemq服务，会发现刚新建的数据库中多了三张表，分别是：
