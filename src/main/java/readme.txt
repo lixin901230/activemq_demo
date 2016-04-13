@@ -6,6 +6,8 @@
 		com.lx.jms.activemq.topic	订阅-发布模式，即topic消息(publish-subscribe)，包含纯java的activeMQ示例和集成spring的示例
 		com.lx.jms.activemq.utils	ActiveMQ工具类
 		com.lx.jms.utils			系统工具类
+		
+	demo中附上了activemq服务的xml配置实例：/src/main/java/activemq.xml
 	
 简介：
 	activemq是JMS消息通信规范的一个实现。总的来说，消息规范里面定义最常见的几种消息通信模式主要有 

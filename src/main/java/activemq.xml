@@ -58,7 +58,7 @@
 			在规定的时间内，无有效订阅，没有入队记录，超时后就会被清理
     -->
     <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" dataDirectory="${activemq.data}" 
-		schedulePeriodForDestinationPurge="10000">
+		schedulePeriodForDestinationPurge="10000" useJmx="true">
 
         <destinationPolicy>
             <policyMap>
@@ -90,7 +90,7 @@
             http://activemq.apache.org/jmx.html
         -->
         <managementContext>
-            <managementContext createConnector="false"/>
+            <managementContext createConnector="true" jmxDomainName="org.apache.activemq"/>
         </managementContext>
 
         <!--
@@ -109,7 +109,7 @@
 			<!-- 方式2：MySql 数据库存储持久化 
 					属性dataSource指定持久化数据库数据源的bean配置，createTablesOnStartup是否在启动的时候创建数据表，
 					默认值是true，这样每次启动都会去创建数据表了，一般是第一次启动的时候设置为true，之后改成false。 -->
-			<jdbcPersistenceAdapter dataSource="#mysql-ds" createTablesOnStartup="true" />
+			<jdbcPersistenceAdapter dataSource="#mysql-ds" createTablesOnStartup="true" useDatabaseLock="false"/>
         </persistenceAdapter>
 		
 
@@ -141,10 +141,10 @@
         <transportConnectors>
             <!-- DOS protection, limit concurrent connections to 1000 and frame size to 100MB -->
             <transportConnector name="openwire" uri="tcp://0.0.0.0:61616?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
-            <transportConnector name="amqp" uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <!-- <transportConnector name="amqp" uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
             <transportConnector name="stomp" uri="stomp://0.0.0.0:61613?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
             <transportConnector name="mqtt" uri="mqtt://0.0.0.0:1883?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
-            <transportConnector name="ws" uri="ws://0.0.0.0:61614?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="ws" uri="ws://0.0.0.0:61614?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/> -->
         </transportConnectors>
 
         <!-- destroy the spring context on shutdown to stop jetty -->
