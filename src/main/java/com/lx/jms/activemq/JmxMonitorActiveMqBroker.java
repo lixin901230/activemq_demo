@@ -82,7 +82,6 @@ public class JmxMonitorActiveMqBroker {
 					System.out.println("\t==> Operation："+ opera.getName());
 				}
 			}
-			
 			connector.close();
 			
 		} catch (Exception e) {
