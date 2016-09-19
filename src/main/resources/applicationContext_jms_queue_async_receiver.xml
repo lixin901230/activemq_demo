@@ -39,11 +39,25 @@
 	  	<!-- 监听方式3（推荐）：messageListenerAdapter监听 -->
 	  	<property name="messageListener" ref="messageListenerAdapter"></property>
 	  	<property name="clientId" value="client_spring_queue"></property>
+	  	
+	  	<property name="taskExecutor" ref="queueTaskPool"></property>	<!-- 使用spring线程池来运行异步消息接受的消息监听线程 -->
+	  	<property name="concurrentConsumers" value="2"></property>
+	  	<property name="maxConcurrentConsumers" value="2"></property>
+	  	<property name="receiveTimeout" value="60000"></property>
+	  	<property name="cacheLevel" value="3"></property>
 	</bean>
 	
 	<!--这个是队列目的地，点对点模式（一对一）-->
 	<bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg index="0" value="lx.spring.queue"/>
+	</bean>
+	
+	<!-- spring 线程池（corePoolSize：线程池维护线程的最少数量 ；queueCapacity：线程池所使用的缓冲队列） -->
+	<bean id="queueTaskPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" destroy-method="destroy">
+		<property name="corePoolSize" value="2"></property>
+		<property name="maxPoolSize" value="10"></property>
+		<property name="queueCapacity" value="2"></property>
+		<property name="threadNamePrefixSet" value="TestQueueTaskPool_"></property>
 	</bean>
 	
 	<!-- 监听方式1：使用MessageListener作为消息监听器 -->  
